@@ -1,5 +1,8 @@
 # Food Delivery Order Management API
 
+![CI Status](https://github.com/jdgorman/food-delivery-api/actions/workflows/ci.yml/badge.svg)
+![CD Status](https://github.com/jdgorman/food-delivery-api/actions/workflows/cd.yml/badge.svg)
+
 A robust RESTful API for managing food delivery operations, built with Spring Boot 4 and Java 25. This system handles restaurant management, menu items, orders, and delivery tracking.
 
 ## 🚀 Features

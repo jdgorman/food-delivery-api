@@ -9,5 +9,10 @@
                 Added restaurant management endpoints (CRUD operations)
             </action>
         </release>
+        <release version="0.0.2" date="2026-02-02" description="CI and CD workflows for automated testing and deployment.">
+            <action dev="jdgorman" type="add">
+                CI and CD workflows for automated testing and deployment.
+            </action>
+        </release>
     </body>
 </document>
