@@ -40,7 +40,6 @@ jobs:
           path: target/*.jar
 
       # Placeholder for actual Azure deployment
-      # You'll add Azure-specific steps here later when ready to deploy
       - name: Ready for Azure deployment
         run: |
           echo "Application built and ready for deployment"
