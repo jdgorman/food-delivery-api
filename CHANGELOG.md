@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.3] - 2026-02-05
+
+### Added
+
+- MenuItem entity, repository, service, and controller.
+- Basic CRUD operations for MenuItem.
+- Association between Restaurant and MenuItem.
+- Validation for MenuItem inputs.
+- CheckStyle analysis for code quality enforcement.
+- JavaDoc comments.
+
 ## [0.0.2] - 2026-02-02
 
 ### Added

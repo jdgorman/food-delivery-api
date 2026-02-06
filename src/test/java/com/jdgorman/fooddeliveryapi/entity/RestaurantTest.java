@@ -25,7 +25,7 @@ class RestaurantTest {
         restaurant.setPhone("123-456-7890");
         restaurant.setCuisineType("Italian");
         restaurant.setActive(true);
-        restaurant.setCreateDate(LocalDateTime.now());
+        restaurant.setCreateTimestamp(LocalDateTime.now());
 
         Set<ConstraintViolation<Restaurant>> violations = validator.validate(restaurant);
 
@@ -40,7 +40,7 @@ class RestaurantTest {
         restaurant.setPhone("123-456-7890");
         restaurant.setCuisineType("Italian");
         restaurant.setActive(true);
-        restaurant.setCreateDate(LocalDateTime.now());
+        restaurant.setCreateTimestamp(LocalDateTime.now());
 
         Set<ConstraintViolation<Restaurant>> violations = validator.validate(restaurant);
 
@@ -56,7 +56,7 @@ class RestaurantTest {
         restaurant.setPhone("123-456-7890");
         restaurant.setCuisineType("Italian");
         restaurant.setActive(true);
-        restaurant.setCreateDate(LocalDateTime.now());
+        restaurant.setCreateTimestamp(LocalDateTime.now());
 
         Set<ConstraintViolation<Restaurant>> violations = validator.validate(restaurant);
 
@@ -72,7 +72,7 @@ class RestaurantTest {
         restaurant.setPhone("123456789");
         restaurant.setCuisineType("Italian");
         restaurant.setActive(true);
-        restaurant.setCreateDate(LocalDateTime.now());
+        restaurant.setCreateTimestamp(LocalDateTime.now());
 
         Set<ConstraintViolation<Restaurant>> violations = validator.validate(restaurant);
 
@@ -88,7 +88,7 @@ class RestaurantTest {
         restaurant.setPhone("123-456-7890");
         restaurant.setCuisineType("");
         restaurant.setActive(true);
-        restaurant.setCreateDate(LocalDateTime.now());
+        restaurant.setCreateTimestamp(LocalDateTime.now());
 
         Set<ConstraintViolation<Restaurant>> violations = validator.validate(restaurant);
 
@@ -107,7 +107,7 @@ class RestaurantTest {
 
         restaurant.onCreate();
 
-        assertNotNull(restaurant.getCreateDate());
+        assertNotNull(restaurant.getCreateTimestamp());
     }
 
     @Test

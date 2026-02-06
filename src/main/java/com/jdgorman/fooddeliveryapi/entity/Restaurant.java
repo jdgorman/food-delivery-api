@@ -35,12 +35,19 @@ public class Restaurant {
     private Boolean active = true;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createDate;
+    private LocalDateTime createTimestamp;
+
+    @Column(nullable = false)
+    private LocalDateTime updateTimestamp;
 
     @PrePersist
     protected void onCreate() {
-        if (createDate == null) {
-            createDate = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        if (createTimestamp == null) {
+            createTimestamp = now;
+        }
+        if (updateTimestamp == null){
+            updateTimestamp = now;
         }
         if (active == null) {
             active = true;

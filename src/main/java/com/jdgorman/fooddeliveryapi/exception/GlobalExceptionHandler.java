@@ -7,6 +7,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -98,5 +99,51 @@ public class GlobalExceptionHandler {
         );
 
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(InvalidEnumValueException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidEnumValueException(
+            InvalidEnumValueException ex,
+            WebRequest request) {
+
+        String validOptions = String.join(", ", ex.getValidValues());
+        String fullMessage = ex.getMessage() + ". Valid options are: " + validOptions;
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid Parameter",
+                fullMessage,
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatchException(
+            MethodArgumentTypeMismatchException ex,
+            WebRequest request) {
+
+        String message = "Invalid value for parameter '" + ex.getName() + "'";
+
+        // If it's an enum type, provide valid values
+        if (ex.getRequiredType() != null && ex.getRequiredType().isEnum()) {
+            Object[] enumConstants = ex.getRequiredType().getEnumConstants();
+            String validValues = java.util.Arrays.stream(enumConstants)
+                    .map(Object::toString)
+                    .collect(java.util.stream.Collectors.joining(", "));
+            message += ". Valid options are: " + validValues;
+        }
+
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Invalid Parameter",
+                message,
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }
