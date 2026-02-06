@@ -10,6 +10,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
@@ -130,9 +131,9 @@ public class GlobalExceptionHandler {
         // If it's an enum type, provide valid values
         if (ex.getRequiredType() != null && ex.getRequiredType().isEnum()) {
             Object[] enumConstants = ex.getRequiredType().getEnumConstants();
-            String validValues = java.util.Arrays.stream(enumConstants)
+            String validValues = Arrays.stream(enumConstants)
                     .map(Object::toString)
-                    .collect(java.util.stream.Collectors.joining(", "));
+                    .collect(Collectors.joining(", "));
             message += ". Valid options are: " + validValues;
         }
 

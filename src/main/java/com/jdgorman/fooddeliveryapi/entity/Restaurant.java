@@ -46,7 +46,7 @@ public class Restaurant {
         if (createTimestamp == null) {
             createTimestamp = now;
         }
-        if (updateTimestamp == null){
+        if (updateTimestamp == null) {
             updateTimestamp = now;
         }
         if (active == null) {

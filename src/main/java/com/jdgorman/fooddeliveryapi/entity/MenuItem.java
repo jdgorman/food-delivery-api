@@ -44,4 +44,11 @@ public class MenuItem {
     private LocalDateTime createTimestamp;
 
     private LocalDateTime updateTimestamp;
+
+    @PrePersist
+    void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createTimestamp = now;
+        this.updateTimestamp = now;
+    }
 }

@@ -100,11 +100,8 @@ public class MenuItemService {
         menuItem.setDescription(request.getDescription());
         menuItem.setPrice(request.getPrice());
         menuItem.setCategory(request.getCategory());
-        menuItem.setIsAvailable(request.getIsAvailable());
+        menuItem.setIsAvailable(request.getIsAvailable() != null ? request.getIsAvailable() : true);
         menuItem.setRestaurant(restaurant);
-        LocalDateTime now = LocalDateTime.now();
-        menuItem.setCreateTimestamp(now);
-        menuItem.setUpdateTimestamp(now);
 
         MenuItem saved = menuItemRepository.save(menuItem);
         return convertToResponse(saved);
@@ -135,7 +132,9 @@ public class MenuItemService {
         menuItem.setDescription(request.getDescription());
         menuItem.setPrice(request.getPrice());
         menuItem.setCategory(request.getCategory());
-        menuItem.setIsAvailable(request.getIsAvailable());
+        menuItem.setIsAvailable(
+                request.getIsAvailable() != null ? request.getIsAvailable() : menuItem.getIsAvailable()
+        );
         menuItem.setUpdateTimestamp(LocalDateTime.now());
 
         MenuItem updated = menuItemRepository.save(menuItem);
@@ -147,6 +146,7 @@ public class MenuItemService {
      * @param restaurantId
      * @param id
      */
+    @Transactional
     public void deleteMenuItem(Long restaurantId, Long id) {
         MenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
