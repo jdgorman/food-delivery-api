@@ -14,5 +14,10 @@
                 CI and CD workflows for automated testing and deployment.
             </action>
         </release>
+        <release version="0.0.3" date="2026-02-06" description="MenuItem entity, repository, service, and controller.">
+            <action dev="jdgorman" type="add">
+                MenuItem entity, repository, service, and controller.
+            </action>
+        </release>
     </body>
 </document>

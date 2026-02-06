@@ -6,6 +6,8 @@ import com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException;
 import com.jdgorman.fooddeliveryapi.repository.RestaurantRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -14,10 +16,19 @@ public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
 
+    /**
+     * Get all restaurants
+     * @return List<Restaurant>
+     */
     public List<Restaurant> getAllRestaurants() {
         return restaurantRepository.findAll();
     }
 
+    /**
+     * Get a specific restaurant by ID
+     * @param id
+     * @return Restaurant
+     */
     public Restaurant getRestaurantById(Long id) {
         return restaurantRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -25,6 +36,11 @@ public class RestaurantService {
                 ));
     }
 
+    /**
+     * Create a new restaurant
+     * @param restaurant
+     * @return Restaurant
+     */
     public Restaurant createRestaurant(Restaurant restaurant) {
         if (restaurantRepository.existsByNameAndAddress(
                 restaurant.getName(),
@@ -37,6 +53,12 @@ public class RestaurantService {
         return restaurantRepository.save(restaurant);
     }
 
+    /**
+     * Update an existing restaurant
+     * @param id
+     * @param restaurant
+     * @return Restaurant
+     */
     public Restaurant updateRestaurant(Long id, Restaurant restaurant) {
         Restaurant existing = restaurantRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -47,9 +69,14 @@ public class RestaurantService {
         existing.setPhone(restaurant.getPhone());
         existing.setCuisineType(restaurant.getCuisineType());
         existing.setActive(restaurant.getActive());
+        existing.setUpdateTimestamp(LocalDateTime.now());
         return restaurantRepository.save(existing);
     }
 
+    /**
+     * Delete a restaurant by ID
+     * @param id
+     */
     public void deleteRestaurant(Long id) {
         if (!restaurantRepository.existsById(id)) {
             throw new ResourceNotFoundException(

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
 
@@ -86,6 +87,21 @@ class GlobalExceptionHandlerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
         assertEquals("Internal Server Error", response.getBody().getError());
         assertEquals("Unexpected error", response.getBody().getMessage());
+        assertEquals("/api/resource", response.getBody().getPath());
+    }
+
+    @Test
+    void handleTypeMismatchExceptionReturnsBadRequestResponseForNonEnumParameter() {
+        when(mockRequest.getDescription(false)).thenReturn("uri=/api/resource");
+
+        MethodArgumentTypeMismatchException exception = new MethodArgumentTypeMismatchException(
+                "value", String.class, "param", null, new IllegalArgumentException("Invalid value")
+        );
+        ResponseEntity<ErrorResponse> response = exceptionHandler.handleTypeMismatchException(exception, mockRequest);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Invalid Parameter", response.getBody().getError());
+        assertTrue(response.getBody().getMessage().contains("Invalid value for parameter 'param'"));
         assertEquals("/api/resource", response.getBody().getPath());
     }
 }
