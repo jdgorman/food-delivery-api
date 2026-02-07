@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "menu_items")
+@Table(name = "menu_item")
 @Data
 public class MenuItem {
 
@@ -41,8 +41,10 @@ public class MenuItem {
     @JoinColumn(name = "restaurant_id", nullable = false)
     private Restaurant restaurant;
 
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createTimestamp;
 
+    @Column(nullable = false)
     private LocalDateTime updateTimestamp;
 
     @PrePersist

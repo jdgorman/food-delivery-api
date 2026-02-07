@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @JsonPropertyOrder({ "id", "name", "address", "phone", "cuisineType", "active", "createDate" })
 @Entity
-@Table(name = "restaurants")
+@Table(name = "restaurant")
 @Data
 public class Restaurant {
 
@@ -43,14 +43,8 @@ public class Restaurant {
     @PrePersist
     protected void onCreate() {
         LocalDateTime now = LocalDateTime.now();
-        if (createTimestamp == null) {
-            createTimestamp = now;
-        }
-        if (updateTimestamp == null) {
-            updateTimestamp = now;
-        }
-        if (active == null) {
-            active = true;
-        }
+        this.createTimestamp = now;
+        this.updateTimestamp = now;
+        this.active = true;
     }
 }
