@@ -19,13 +19,14 @@ class RestaurantTest {
 
     @Test
     void restaurantIsValidWhenAllFieldsAreCorrect() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("Valid Restaurant");
-        restaurant.setAddress("123 Main St");
-        restaurant.setPhone("123-456-7890");
-        restaurant.setCuisineType("Italian");
-        restaurant.setActive(true);
-        restaurant.setCreateTimestamp(LocalDateTime.now());
+        Restaurant restaurant = Restaurant.builder()
+                .name("Valid Restaurant")
+                .address("123 Main St")
+                .phone("123-456-7890")
+                .cuisineType("Italian")
+                .active(true)
+                .createTimestamp(LocalDateTime.now())
+                .build();
 
         Set<ConstraintViolation<Restaurant>> violations = validator.validate(restaurant);
 
@@ -34,13 +35,14 @@ class RestaurantTest {
 
     @Test
     void restaurantIsInvalidWhenNameIsBlank() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("");
-        restaurant.setAddress("123 Main St");
-        restaurant.setPhone("123-456-7890");
-        restaurant.setCuisineType("Italian");
-        restaurant.setActive(true);
-        restaurant.setCreateTimestamp(LocalDateTime.now());
+        Restaurant restaurant = Restaurant.builder()
+                .name("")
+                .address("123 Main St")
+                .phone("123-456-7890")
+                .cuisineType("Italian")
+                .active(true)
+                .createTimestamp(LocalDateTime.now())
+                .build();
 
         Set<ConstraintViolation<Restaurant>> violations = validator.validate(restaurant);
 
@@ -50,13 +52,14 @@ class RestaurantTest {
 
     @Test
     void restaurantIsInvalidWhenAddressIsBlank() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("Valid Restaurant");
-        restaurant.setAddress("");
-        restaurant.setPhone("123-456-7890");
-        restaurant.setCuisineType("Italian");
-        restaurant.setActive(true);
-        restaurant.setCreateTimestamp(LocalDateTime.now());
+        Restaurant restaurant = Restaurant.builder()
+                .name("Valid Restaurant")
+                .address("")
+                .phone("123-456-7890")
+                .cuisineType("Italian")
+                .active(true)
+                .createTimestamp(LocalDateTime.now())
+                .build();
 
         Set<ConstraintViolation<Restaurant>> violations = validator.validate(restaurant);
 
@@ -66,13 +69,14 @@ class RestaurantTest {
 
     @Test
     void restaurantIsInvalidWhenPhoneIsInWrongFormat() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("Valid Restaurant");
-        restaurant.setAddress("123 Main St");
-        restaurant.setPhone("123456789");
-        restaurant.setCuisineType("Italian");
-        restaurant.setActive(true);
-        restaurant.setCreateTimestamp(LocalDateTime.now());
+        Restaurant restaurant = Restaurant.builder()
+                .name("Valid Restaurant")
+                .address("123 Main St")
+                .phone("123456789")
+                .cuisineType("Italian")
+                .active(true)
+                .createTimestamp(LocalDateTime.now())
+                .build();
 
         Set<ConstraintViolation<Restaurant>> violations = validator.validate(restaurant);
 
@@ -82,13 +86,14 @@ class RestaurantTest {
 
     @Test
     void restaurantIsInvalidWhenCuisineTypeIsBlank() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("Valid Restaurant");
-        restaurant.setAddress("123 Main St");
-        restaurant.setPhone("123-456-7890");
-        restaurant.setCuisineType("");
-        restaurant.setActive(true);
-        restaurant.setCreateTimestamp(LocalDateTime.now());
+        Restaurant restaurant = Restaurant.builder()
+                .name("Valid Restaurant")
+                .address("123 Main St")
+                .phone("123-456-7890")
+                .cuisineType("")
+                .active(true)
+                .createTimestamp(LocalDateTime.now())
+                .build();
 
         Set<ConstraintViolation<Restaurant>> violations = validator.validate(restaurant);
 
@@ -98,12 +103,13 @@ class RestaurantTest {
 
     @Test
     void createDateIsSetAutomaticallyWhenNull() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("Valid Restaurant");
-        restaurant.setAddress("123 Main St");
-        restaurant.setPhone("123-456-7890");
-        restaurant.setCuisineType("Italian");
-        restaurant.setActive(true);
+        Restaurant restaurant = Restaurant.builder()
+                .name("Valid Restaurant")
+                .address("123 Main St")
+                .phone("123-456-7890")
+                .cuisineType("Italian")
+                .active(true)
+                .build();
 
         restaurant.onCreate();
 
@@ -112,12 +118,13 @@ class RestaurantTest {
 
     @Test
     void activeIsSetToTrueWhenNull() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("Valid Restaurant");
-        restaurant.setAddress("123 Main St");
-        restaurant.setPhone("123-456-7890");
-        restaurant.setCuisineType("Italian");
-        restaurant.setActive(null);
+        Restaurant restaurant = Restaurant.builder()
+                .name("Valid Restaurant")
+                .address("123 Main St")
+                .phone("123-456-7890")
+                .cuisineType("Italian")
+                .active(null)
+                .build();
 
         restaurant.onCreate();
 

@@ -1,0 +1,580 @@
+{
+  "info": {
+    "_postman_id": "16440496-1072-40a8-b17f-3c4a18e6ce11",
+    "name": "Food Delivery API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49560382",
+    "_collection_link": "https://go.postman.co/collection/49560382-16440496-1072-40a8-b17f-3c4a18e6ce11?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Create Restaurant",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Burger House\",\n  \"address\": \"789 Main St\",\n  \"phone\": \"479-555-5678\",\n  \"cuisineType\": \"American\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Restaurants",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Restaurant By Id",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Pizza Palace\",\n  \"address\": \"123 Main St\",\n  \"phone\": \"555-1234\",\n  \"cuisineType\": \"Italian\"\n}"
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Restaurant",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Joey's Burger House\",\n  \"address\": \"789 Main St\",\n  \"phone\": \"479-555-5678\",\n  \"cuisineType\": \"American\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Restaurant",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Panda Express Late Night\",\n  \"address\": \"123 Greenville Ave Dallas TX 75206\",\n  \"phone\": \"4172239900111111111111111111111\",\n  \"cuisineType\": \"Chinese\"\n}"
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Restaurant Copy",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Burger House\",\n  \"address\": \"789 Main St\",\n  \"phone\": \"479-555-5678\",\n  \"cuisineType\": \"American\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Menu Item to Restaurant Id",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Margherita Pizza\",\n  \"description\": \"Classic pizza with tomato, mozzarella, and basil\",\n  \"price\": 12.99,\n  \"category\": \"ENTREE\",\n  \"isAvailable\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants/2/menu-items",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants",
+            "2",
+            "menu-items"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Menu Items for Restaurant Id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants/2/menu-items",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants",
+            "2",
+            "menu-items"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Menu Item for Restaurant by Id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants/2/menu-items/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants",
+            "2",
+            "menu-items",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Menu Items Under Category",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants/2/menu-items?category=DESSERT",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants",
+            "2",
+            "menu-items"
+          ],
+          "query": [
+            {
+              "key": "category",
+              "value": "DESSERT"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Menu Item For Restaurant",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Cinnamon Roll\",\n  \"description\": \"A sweet cinnamon roll with a soft, pillowy texture and a rich, buttery flavor.\",\n  \"price\": 7.99,\n  \"category\": \"DESSERT\",\n  \"isAvailable\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants/2/menu-items/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants",
+            "2",
+            "menu-items",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Menu Item",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/restaurants/2/menu-items/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "restaurants",
+            "2",
+            "menu-items",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Customer",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"423-555-9999\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/customers",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "customers"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Customers",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Burger House\",\n  \"address\": \"789 Main St\",\n  \"phone\": \"479-555-5678\",\n  \"cuisineType\": \"American\"\n}"
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/customers",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "customers"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Customer By Id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/customers/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Customer",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"email\": \"jane.smith@example.com\",\n  \"phone\": \"423-555-8888\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/customers/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Customer Copy",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"423-555-9999\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/customers",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "customers"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Customer",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/customers/2",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Delivery Address for Customer",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"label\": \"Home\",\n  \"streetAddress\": \"123 Main St\",\n  \"city\": \"Dallas\",\n  \"state\": \"TX\",\n  \"zipCode\": \"75001\",\n  \"isDefault\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/customers/1/addresses",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "1",
+            "addresses"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get all Addresses for Customer",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/customers/1/addresses",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "1",
+            "addresses"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Specific Address by Id",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/customers/1/addresses/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "1",
+            "addresses",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Delivery Address",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"label\": \"Office\",\n  \"streetAddress\": \"789 Corporate Dr\",\n  \"city\": \"Plano\",\n  \"state\": \"TX\",\n  \"zipCode\": \"75075\",\n  \"isDefault\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/api/customers/1/addresses/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "1",
+            "addresses",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Delivery Address",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/api/customers/1/addresses/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "api",
+            "customers",
+            "1",
+            "addresses",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}

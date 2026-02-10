@@ -1,17 +1,25 @@
 package com.jdgorman.fooddeliveryapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@JsonPropertyOrder({ "id", "name", "address", "phone", "cuisineType", "active", "createDate" })
 @Entity
 @Table(name = "restaurant")
 @Data
+@JsonPropertyOrder({ "id", "name", "address", "phone", "cuisineType", "active", "createDate" })
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Restaurant {
 
     @Id

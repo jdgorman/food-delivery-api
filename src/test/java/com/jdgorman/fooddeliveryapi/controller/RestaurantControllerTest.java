@@ -31,9 +31,7 @@ class RestaurantControllerTest {
 
     @Test
     void getAllRestaurantsReturnsListOfRestaurants() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(1L);
-        restaurant.setName("Test Restaurant");
+        Restaurant restaurant = Restaurant.builder().id(1L).name("Test Restaurant").build();
         when(restaurantService.getAllRestaurants()).thenReturn(List.of(restaurant));
 
         ResponseEntity<List<Restaurant>> response = restaurantController.getAllRestaurants();
@@ -46,9 +44,7 @@ class RestaurantControllerTest {
 
     @Test
     void getRestaurantByIdReturnsRestaurantWhenFound() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(1L);
-        restaurant.setName("Test Restaurant");
+        Restaurant restaurant = Restaurant.builder().id(1L).name("Test Restaurant").build();
         when(restaurantService.getRestaurantById(1L)).thenReturn(restaurant);
 
         ResponseEntity<Restaurant> response = restaurantController.getRestaurantById(1L);
@@ -71,8 +67,7 @@ class RestaurantControllerTest {
 
     @Test
     void createRestaurantReturnsCreatedRestaurant() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("New Restaurant");
+        Restaurant restaurant = Restaurant.builder().name("New Restaurant").build();
         when(restaurantService.createRestaurant(Mockito.any(Restaurant.class))).thenReturn(restaurant);
 
         ResponseEntity<Restaurant> response = restaurantController.createRestaurant(restaurant);
@@ -84,9 +79,7 @@ class RestaurantControllerTest {
 
     @Test
     void updateRestaurantReturnsUpdatedRestaurantWhenSuccessful() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(1L);
-        restaurant.setName("Updated Restaurant");
+        Restaurant restaurant = Restaurant.builder().id(1L).name("Updated Restaurant").build();
         when(restaurantService.updateRestaurant(eq(1L), any(Restaurant.class))).thenReturn(restaurant);
 
         ResponseEntity<Restaurant> response = restaurantController.updateRestaurant(1L, restaurant);
@@ -98,8 +91,7 @@ class RestaurantControllerTest {
 
     @Test
     void updateRestaurantReturnsBadRequestWhenIdMismatch() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(2L);
+        Restaurant restaurant = Restaurant.builder().id(2L).build();
 
         ResponseEntity<Restaurant> response = restaurantController.updateRestaurant(1L, restaurant);
 
@@ -111,7 +103,7 @@ class RestaurantControllerTest {
     void updateRestaurantReturnsNotFoundWhenRestaurantDoesNotExist() {
         when(restaurantService.updateRestaurant(eq(1L), any(Restaurant.class))).thenReturn(null);
 
-        ResponseEntity<Restaurant> response = restaurantController.updateRestaurant(1L, new Restaurant());
+        ResponseEntity<Restaurant> response = restaurantController.updateRestaurant(1L, Restaurant.builder().build());
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         verify(restaurantService, times(1)).updateRestaurant(eq(1L), any(Restaurant.class));

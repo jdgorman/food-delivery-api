@@ -15,6 +15,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service that contains business logic for managing delivery addresses for customers.
+ * <p>
+ * Responsibilities include creating, updating, deleting and retrieving delivery addresses,
+ * ensuring addresses are owned by the specified customer and managing the "default" flag
+ * behavior (only one default address per customer).
+ */
 @Service
 @RequiredArgsConstructor
 public class DeliveryAddressService {
@@ -22,7 +29,14 @@ public class DeliveryAddressService {
     private final DeliveryAddressRepository addressRepository;
     private final CustomerRepository customerRepository;
 
-    public List<DeliveryAddressResponse> getAddressesByCustomer(Long customerId) {
+    /**
+     * Retrieve all delivery addresses associated with a customer.
+     *
+     * @param customerId the id of the customer whose addresses should be returned
+     * @return a list of {@link DeliveryAddressResponse} DTOs for the customer's addresses; may be empty
+     * @throws ResourceNotFoundException if the customer with {@code customerId} does not exist
+     */
+    public List<DeliveryAddressResponse> getDeliveryAddressesByCustomer(Long customerId) {
         // Verify customer exists
         customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -35,7 +49,15 @@ public class DeliveryAddressService {
                 .collect(Collectors.toList());
     }
 
-    public DeliveryAddressResponse getAddressById(Long customerId, Long addressId) {
+    /**
+     * Retrieve a single delivery address by id, validating that it belongs to the given customer.
+     *
+     * @param customerId the id of the customer who should own the address
+     * @param addressId  the id of the address to retrieve
+     * @return a {@link DeliveryAddressResponse} DTO for the requested address
+     * @throws ResourceNotFoundException if the address does not exist or does not belong to the customer
+     */
+    public DeliveryAddressResponse getDeliveryAddressById(Long customerId, Long addressId) {
         DeliveryAddress address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Delivery address with id " + addressId + " does not exist"
@@ -51,8 +73,19 @@ public class DeliveryAddressService {
         return convertToResponse(address);
     }
 
+    /**
+     * Create a new delivery address for a customer.
+     * <p>
+     * If the incoming request marks the address as default, existing default addresses for the
+     * customer will be unset before persisting the new address.
+     *
+     * @param customerId the id of the customer to associate the new address with
+     * @param request    the {@link DeliveryAddressRequest} payload containing address fields
+     * @return the created {@link DeliveryAddressResponse} DTO
+     * @throws ResourceNotFoundException if the customer does not exist
+     */
     @Transactional
-    public DeliveryAddressResponse createAddress(Long customerId, DeliveryAddressRequest request) {
+    public DeliveryAddressResponse createDeliveryAddress(Long customerId, DeliveryAddressRequest request) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Customer with id " + customerId + " does not exist"
@@ -60,24 +93,36 @@ public class DeliveryAddressService {
 
         // If this is marked as default, unset any existing default
         if (request.getIsDefault()) {
-            unsetDefaultAddresses(customerId);
+            unsetDefaultDeliveryAddresses(customerId);
         }
 
-        DeliveryAddress address = new DeliveryAddress();
-        address.setCustomer(customer);
-        address.setLabel(request.getLabel());
-        address.setStreetAddress(request.getStreetAddress());
-        address.setCity(request.getCity());
-        address.setState(request.getState());
-        address.setZipCode(request.getZipCode());
-        address.setIsDefault(request.getIsDefault());
+        DeliveryAddress address = DeliveryAddress.builder()
+                .customer(customer)
+                .label(request.getLabel())
+                .streetAddress(request.getStreetAddress())
+                .city(request.getCity())
+                .state(request.getState())
+                .zipCode(request.getZipCode())
+                .isDefault(request.getIsDefault())
+                .build();
 
         DeliveryAddress saved = addressRepository.save(address);
         return convertToResponse(saved);
     }
 
+    /**
+     * Update an existing delivery address for a customer.
+     * <p>
+     * Validates ownership, handles default-flag transitions, updates fields and persists the change.
+     *
+     * @param customerId the id of the customer who must own the address
+     * @param addressId  the id of the address to update
+     * @param request     the {@link DeliveryAddressRequest} payload containing updated values
+     * @return the updated {@link DeliveryAddressResponse} DTO
+     * @throws ResourceNotFoundException if the address does not exist or does not belong to the customer
+     */
     @Transactional
-    public DeliveryAddressResponse updateAddress(Long customerId, Long addressId, DeliveryAddressRequest request) {
+    public DeliveryAddressResponse updateDeliveryAddress(Long customerId, Long addressId, DeliveryAddressRequest request) {
         DeliveryAddress address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Cannot update. Delivery address with id " + addressId + " does not exist"
@@ -92,7 +137,7 @@ public class DeliveryAddressService {
 
         // If changing to default, unset any existing default
         if (request.getIsDefault() && !address.getIsDefault()) {
-            unsetDefaultAddresses(customerId);
+            unsetDefaultDeliveryAddresses(customerId);
         }
 
         address.setLabel(request.getLabel());
@@ -107,8 +152,15 @@ public class DeliveryAddressService {
         return convertToResponse(updated);
     }
 
+    /**
+     * Delete a delivery address after validating it belongs to the given customer.
+     *
+     * @param customerId the id of the customer who should own the address
+     * @param addressId  the id of the address to delete
+     * @throws ResourceNotFoundException if the address does not exist or does not belong to the customer
+     */
     @Transactional
-    public void deleteAddress(Long customerId, Long addressId) {
+    public void deleteDeliveryAddress(Long customerId, Long addressId) {
         DeliveryAddress address = addressRepository.findById(addressId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Cannot delete. Delivery address with id " + addressId + " does not exist"
@@ -124,7 +176,12 @@ public class DeliveryAddressService {
         addressRepository.deleteById(addressId);
     }
 
-    private void unsetDefaultAddresses(Long customerId) {
+    /**
+     * Unset the 'isDefault' flag on any addresses for the given customer.
+     *
+     * @param customerId the id of the customer whose default addresses should be cleared
+     */
+    private void unsetDefaultDeliveryAddresses(Long customerId) {
         List<DeliveryAddress> defaultAddresses = addressRepository.findByCustomerIdAndIsDefaultTrue(customerId);
         defaultAddresses.forEach(addr -> {
             addr.setIsDefault(false);
@@ -132,19 +189,25 @@ public class DeliveryAddressService {
         });
     }
 
+    /**
+     * Convert a {@link DeliveryAddress} entity to a {@link DeliveryAddressResponse} DTO.
+     *
+     * @param address the entity to convert; must not be null
+     * @return a populated {@link DeliveryAddressResponse}
+     */
     private DeliveryAddressResponse convertToResponse(DeliveryAddress address) {
-        DeliveryAddressResponse response = new DeliveryAddressResponse();
-        response.setId(address.getId());
-        response.setCustomerId(address.getCustomer().getId());
-        response.setCustomerName(address.getCustomer().getFirstName() + " " + address.getCustomer().getLastName());
-        response.setLabel(address.getLabel());
-        response.setStreetAddress(address.getStreetAddress());
-        response.setCity(address.getCity());
-        response.setState(address.getState());
-        response.setZipCode(address.getZipCode());
-        response.setIsDefault(address.getIsDefault());
-        response.setCreatedAt(address.getCreateTimestamp());
-        response.setUpdatedAt(address.getUpdateTimestamp());
-        return response;
+        return DeliveryAddressResponse.builder()
+                .id(address.getId())
+                .customerId(address.getCustomer().getId())
+                .customerName(address.getCustomer().getFirstName() + " " + address.getCustomer().getLastName())
+                .label(address.getLabel())
+                .streetAddress(address.getStreetAddress())
+                .city(address.getCity())
+                .state(address.getState())
+                .zipCode(address.getZipCode())
+                .isDefault(address.getIsDefault())
+                .createdAt(address.getCreateTimestamp())
+                .updatedAt(address.getUpdateTimestamp())
+                .build();
     }
 }

@@ -1,9 +1,14 @@
 package com.jdgorman.fooddeliveryapi.dto;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
+@JsonPropertyOrder({ "id", "customerId", "customerName", "label", "streetAddress", "city", "state", "zipCode", "isDefault",
+        "createdAt", "updatedAt" })
+@Builder
 public class DeliveryAddressResponse {
 
     private Long id;

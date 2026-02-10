@@ -1,16 +1,24 @@
 package com.jdgorman.fooddeliveryapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "menu_item")
 @Data
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MenuItem {
 
     @Id

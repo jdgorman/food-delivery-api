@@ -10,6 +10,14 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Service layer for managing restaurants.
+ *
+ * <p>This service encapsulates business rules and repository interactions for CRUD operations
+ * on {@link Restaurant} entities. It throws {@link ResourceNotFoundException} when a requested
+ * entity does not exist and {@link DuplicateResourceException} when a create operation would
+ * violate uniqueness constraints.</p>
+ */
 @Service
 @RequiredArgsConstructor
 public class RestaurantService {
@@ -17,17 +25,20 @@ public class RestaurantService {
     private final RestaurantRepository restaurantRepository;
 
     /**
-     * Get all restaurants
-     * @return List<Restaurant>
+     * Retrieve all restaurants.
+     *
+     * @return a list of all {@link Restaurant} entities; may be empty but never null
      */
     public List<Restaurant> getAllRestaurants() {
         return restaurantRepository.findAll();
     }
 
     /**
-     * Get a specific restaurant by ID
-     * @param id
-     * @return Restaurant
+     * Retrieve a specific restaurant by id.
+     *
+     * @param id the id of the restaurant to retrieve
+     * @return the found {@link Restaurant}
+     * @throws ResourceNotFoundException if no restaurant with the provided id exists
      */
     public Restaurant getRestaurantById(Long id) {
         return restaurantRepository.findById(id)
@@ -37,9 +48,15 @@ public class RestaurantService {
     }
 
     /**
-     * Create a new restaurant
-     * @param restaurant
-     * @return Restaurant
+     * Create a new restaurant.
+     *
+     * <p>This method checks for an existing restaurant with the same name and address and
+     * throws {@link DuplicateResourceException} to prevent duplicates. On success it persists
+     * and returns the saved entity.</p>
+     *
+     * @param restaurant the {@link Restaurant} entity to create; must contain the required fields
+     * @return the persisted {@link Restaurant}
+     * @throws DuplicateResourceException if a restaurant with the same name and address already exists
      */
     public Restaurant createRestaurant(Restaurant restaurant) {
         if (restaurantRepository.existsByNameAndAddress(
@@ -54,10 +71,15 @@ public class RestaurantService {
     }
 
     /**
-     * Update an existing restaurant
-     * @param id
-     * @param restaurant
-     * @return Restaurant
+     * Update an existing restaurant.
+     *
+     * <p>Validates that the restaurant exists, applies the provided updates to the existing
+     * entity, sets the update timestamp, and persists the change.</p>
+     *
+     * @param id         the id of the restaurant to update
+     * @param restaurant the {@link Restaurant} entity carrying updated values
+     * @return the updated {@link Restaurant}
+     * @throws ResourceNotFoundException if no restaurant with the provided id exists
      */
     public Restaurant updateRestaurant(Long id, Restaurant restaurant) {
         Restaurant existing = restaurantRepository.findById(id)
@@ -74,8 +96,10 @@ public class RestaurantService {
     }
 
     /**
-     * Delete a restaurant by ID
-     * @param id
+     * Delete a restaurant by id.
+     *
+     * @param id the id of the restaurant to delete
+     * @throws ResourceNotFoundException if no restaurant with the provided id exists
      */
     public void deleteRestaurant(Long id) {
         if (!restaurantRepository.existsById(id)) {
