@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - Updated README with API documentation and usage instructions.
 - CRUD operations for Customer and DeliveryAddress.
 - Builder annotation for entities and DTOs to simplify object creation.
+- Validation for Customer and DeliveryAddress inputs.
 
 ## [0.0.3] - 2026-02-06
 
