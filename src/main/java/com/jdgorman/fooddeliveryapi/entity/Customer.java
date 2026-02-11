@@ -1,46 +1,55 @@
 package com.jdgorman.fooddeliveryapi.entity;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "restaurant")
+@Table(name = "customer",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = "email",
+                name = "uk_customer_email"
+        ))
 @Data
-@JsonPropertyOrder({ "id", "name", "address", "phone", "cuisineType", "active", "createDate" })
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Restaurant {
+public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Restaurant name is required")
+    @NotBlank(message = "First name is required")
     @Column(nullable = false)
-    private String name;
+    private String firstName;
 
-    @NotBlank(message = "Address is required")
-    private String address;
+    @NotBlank(message = "Last name is required")
+    @Column(nullable = false)
+    private String lastName;
 
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    @NotBlank(message = "Phone number is required")
+    @Column(nullable = false)
     @Pattern(regexp = "^(?:\\+1\\s?)?(?:\\(\\d{3}\\)|\\d{3})[.\\-\\s]?\\d{3}[.\\-\\s]?\\d{4}$",
             message = "Phone must be a valid US phone number")
     private String phone;
 
-    @NotBlank(message = "Cuisine type is required")
-    private String cuisineType;
-
-    private Boolean active = true;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<DeliveryAddress> addresses = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createTimestamp;
@@ -49,12 +58,9 @@ public class Restaurant {
     private LocalDateTime updateTimestamp;
 
     @PrePersist
-    protected void onCreate() {
+    void onCreate() {
         LocalDateTime now = LocalDateTime.now();
         this.createTimestamp = now;
         this.updateTimestamp = now;
-        if (this.active == null) {
-            this.active = true;
-        }
     }
 }

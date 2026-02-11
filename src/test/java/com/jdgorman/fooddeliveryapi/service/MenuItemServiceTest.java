@@ -40,14 +40,11 @@ public class MenuItemServiceTest {
 
     @Test
     void getMenuItemsByRestaurantReturnsListWhenRestaurantExists() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(1L);
+        Restaurant restaurant = Restaurant.builder().id(1L).build();
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
 
-        MenuItem item1 = new MenuItem();
-        item1.setRestaurant(restaurant);
-        MenuItem item2 = new MenuItem();
-        item2.setRestaurant(restaurant);
+        MenuItem item1 = MenuItem.builder().restaurant(restaurant).build();
+        MenuItem item2 = MenuItem.builder().restaurant(restaurant).build();
         when(menuItemRepository.findByRestaurantId(1L)).thenReturn(List.of(item1, item2));
 
         List<MenuItemResponse> responses = menuItemService.getMenuItemsByRestaurant(1L);
@@ -65,11 +62,8 @@ public class MenuItemServiceTest {
 
     @Test
     void getMenuItemByIdReturnsMenuItemWhenFoundAndBelongsToRestaurant() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(1L);
-        MenuItem menuItem = new MenuItem();
-        menuItem.setId(1L);
-        menuItem.setRestaurant(restaurant);
+        Restaurant restaurant = Restaurant.builder().id(1L).build();
+        MenuItem menuItem = MenuItem.builder().id(1L).restaurant(restaurant).build();
         when(menuItemRepository.findById(1L)).thenReturn(Optional.of(menuItem));
 
         MenuItemResponse response = menuItemService.getMenuItemById(1L, 1L);
@@ -86,11 +80,8 @@ public class MenuItemServiceTest {
 
     @Test
     void getMenuItemByIdThrowsExceptionWhenMenuItemDoesNotBelongToRestaurant() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(2L);
-        MenuItem menuItem = new MenuItem();
-        menuItem.setId(1L);
-        menuItem.setRestaurant(restaurant);
+        Restaurant restaurant = Restaurant.builder().id(2L).build();
+        MenuItem menuItem = MenuItem.builder().id(1L).restaurant(restaurant).build();
         when(menuItemRepository.findById(1L)).thenReturn(Optional.of(menuItem));
 
         assertThrows(ResourceNotFoundException.class, () -> menuItemService.getMenuItemById(1L, 1L));
@@ -98,8 +89,7 @@ public class MenuItemServiceTest {
 
     @Test
     void createMenuItemSavesAndReturnsMenuItemWhenRestaurantExists() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(1L);
+        Restaurant restaurant = Restaurant.builder().id(1L).build();
         MenuItemRequest request = MenuItemRequest.builder()
                 .name("Item")
                 .description("Description")
@@ -140,11 +130,8 @@ public class MenuItemServiceTest {
 
     @Test
     void updateMenuItemUpdatesAndReturnsMenuItemWhenFoundAndBelongsToRestaurant() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(1L);
-        MenuItem menuItem = new MenuItem();
-        menuItem.setId(1L);
-        menuItem.setRestaurant(restaurant);
+        Restaurant restaurant = Restaurant.builder().id(1L).build();
+        MenuItem menuItem = MenuItem.builder().id(1L).restaurant(restaurant).build();
         MenuItemRequest request = MenuItemRequest.builder()
                 .name("Updated Item")
                 .description("Updated Description")
@@ -177,11 +164,8 @@ public class MenuItemServiceTest {
 
     @Test
     void updateMenuItemThrowsExceptionWhenMenuItemDoesNotBelongToRestaurant() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(2L);
-        MenuItem menuItem = new MenuItem();
-        menuItem.setId(1L);
-        menuItem.setRestaurant(restaurant);
+        Restaurant restaurant = Restaurant.builder().id(2L).build();
+        MenuItem menuItem = MenuItem.builder().id(1L).restaurant(restaurant).build();
         MenuItemRequest request = MenuItemRequest.builder()
                 .name("Updated Item")
                 .description("Updated Description")
@@ -197,11 +181,8 @@ public class MenuItemServiceTest {
 
     @Test
     void deleteMenuItemDeletesWhenFoundAndBelongsToRestaurant() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(1L);
-        MenuItem menuItem = new MenuItem();
-        menuItem.setId(1L);
-        menuItem.setRestaurant(restaurant);
+        Restaurant restaurant = Restaurant.builder().id(1L).build();
+        MenuItem menuItem = MenuItem.builder().id(1L).restaurant(restaurant).build();
         when(menuItemRepository.findById(1L)).thenReturn(Optional.of(menuItem));
 
         menuItemService.deleteMenuItem(1L, 1L);
@@ -218,11 +199,8 @@ public class MenuItemServiceTest {
 
     @Test
     void deleteMenuItemThrowsExceptionWhenMenuItemDoesNotBelongToRestaurant() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(2L);
-        MenuItem menuItem = new MenuItem();
-        menuItem.setId(1L);
-        menuItem.setRestaurant(restaurant);
+        Restaurant restaurant = Restaurant.builder().id(2L).build();
+        MenuItem menuItem = MenuItem.builder().id(1L).restaurant(restaurant).build();
         when(menuItemRepository.findById(1L)).thenReturn(Optional.of(menuItem));
 
         assertThrows(ResourceNotFoundException.class, () -> menuItemService.deleteMenuItem(1L, 1L));

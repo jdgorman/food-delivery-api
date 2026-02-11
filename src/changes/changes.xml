@@ -19,5 +19,10 @@
                 MenuItem entity, repository, service, and controller.
             </action>
         </release>
+        <release version="0.0.4" date="2026-02-10" description="Customer and DeliveryAddress entities, repositories, services, and controllers.">
+            <action dev="jdgorman" type="add">
+                Customer and DeliveryAddress entities, repositories, services, and controllers.
+            </action>
+        </release>
     </body>
 </document>
