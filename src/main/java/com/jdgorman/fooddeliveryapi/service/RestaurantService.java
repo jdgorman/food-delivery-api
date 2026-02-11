@@ -38,7 +38,6 @@ public class RestaurantService {
      *
      * @param id the id of the restaurant to retrieve
      * @return the found {@link Restaurant}
-     * @throws ResourceNotFoundException if no restaurant with the provided id exists
      */
     public Restaurant getRestaurantById(Long id) {
         return restaurantRepository.findById(id)
@@ -56,7 +55,6 @@ public class RestaurantService {
      *
      * @param restaurant the {@link Restaurant} entity to create; must contain the required fields
      * @return the persisted {@link Restaurant}
-     * @throws DuplicateResourceException if a restaurant with the same name and address already exists
      */
     public Restaurant createRestaurant(Restaurant restaurant) {
         if (restaurantRepository.existsByNameAndAddress(
@@ -79,7 +77,6 @@ public class RestaurantService {
      * @param id         the id of the restaurant to update
      * @param restaurant the {@link Restaurant} entity carrying updated values
      * @return the updated {@link Restaurant}
-     * @throws ResourceNotFoundException if no restaurant with the provided id exists
      */
     public Restaurant updateRestaurant(Long id, Restaurant restaurant) {
         Restaurant existing = restaurantRepository.findById(id)
@@ -90,7 +87,9 @@ public class RestaurantService {
         existing.setAddress(restaurant.getAddress());
         existing.setPhone(restaurant.getPhone());
         existing.setCuisineType(restaurant.getCuisineType());
-        existing.setActive(restaurant.getActive());
+        if (restaurant.getActive() != null) {
+            existing.setActive(restaurant.getActive());
+        }
         existing.setUpdateTimestamp(LocalDateTime.now());
         return restaurantRepository.save(existing);
     }
@@ -99,7 +98,6 @@ public class RestaurantService {
      * Delete a restaurant by id.
      *
      * @param id the id of the restaurant to delete
-     * @throws ResourceNotFoundException if no restaurant with the provided id exists
      */
     public void deleteRestaurant(Long id) {
         if (!restaurantRepository.existsById(id)) {

@@ -1,6 +1,6 @@
 package com.jdgorman.fooddeliveryapi.repository;
 
-import com.jdgorman.fooddeliveryapi.entity.MenuCategory;
+import com.jdgorman.fooddeliveryapi.enumerator.MenuCategory;
 import com.jdgorman.fooddeliveryapi.entity.MenuItem;
 import com.jdgorman.fooddeliveryapi.entity.Restaurant;
 import org.junit.jupiter.api.BeforeEach;

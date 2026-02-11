@@ -24,5 +24,10 @@
                 Customer and DeliveryAddress entities, repositories, services, and controllers.
             </action>
         </release>
+        <release version="0.0.5" date="2026-02-11" description="CustomerOrder and OrderItem entities, repositories, services, and controllers.">
+            <action dev="jdgorman" type="add">
+                CustomerOrder and OrderItem entities, repositories, services, and controllers.
+            </action>
+        </release>
     </body>
 </document>

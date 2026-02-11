@@ -3,7 +3,7 @@
 ![CI Status](https://github.com/jdgorman/food-delivery-api/actions/workflows/ci.yml/badge.svg)
 ![CD Status](https://github.com/jdgorman/food-delivery-api/actions/workflows/cd.yml/badge.svg)
 
-A robust RESTful API for managing food delivery operations, built with Spring Boot 4 and Java 25. This system handles restaurant management, menu items, customer profiles, delivery addresses, orders, and delivery tracking.
+A robust RESTful API for managing food delivery operations, built with Spring Boot 4 and Java 25. This system handles restaurant management, menu items, customer profiles, delivery addresses, customer orders, and delivery tracking.
 
 ## 🚀 Features
 
@@ -12,6 +12,7 @@ A robust RESTful API for managing food delivery operations, built with Spring Bo
 - **Menu Item Management**: Full menu management with categories and availability tracking
 - **Customer Management**: Customer registration and profile management
 - **Delivery Address Management**: Multiple addresses per customer with default address support
+- **Order Management**: Create, retrieve, update status, and cancel customer orders
 - **Input Validation**: Comprehensive validation for all incoming requests
 - **Duplicate Prevention**: Database constraints and service-layer checks
 - **Exception Handling**: Global exception handling with meaningful error messages
@@ -20,9 +21,8 @@ A robust RESTful API for managing food delivery operations, built with Spring Bo
 - **CI/CD Pipeline**: Automated testing and code quality checks with GitHub Actions
 
 ### Planned Features
-- Order creation and management with status tracking
 - Driver assignment and delivery tracking
-- Real-time order status updates
+- Real-time order tracking updates
 - Advanced search and filtering capabilities
 - Order history and reporting
 - Payment processing integration
@@ -119,6 +119,17 @@ The application uses H2 in-memory database for development. Database is automati
 | POST | `/api/customers/{customerId}/addresses` | Create delivery address | 201 Created or 400/404 |
 | PUT | `/api/customers/{customerId}/addresses/{addressId}` | Update delivery address | 200 OK or 404 |
 | DELETE | `/api/customers/{customerId}/addresses/{addressId}` | Delete delivery address | 204 No Content or 404 |
+
+### Order Management
+
+| Method | Endpoint | Description | Response |
+|--------|----------|-------------|----------|
+| POST | `/api/orders` | Create new order | 201 Created or 400/404 |
+| GET | `/api/orders/{id}` | Get order by ID | 200 OK or 404 |
+| GET | `/api/orders/customer/{customerId}` | Get orders for customer | 200 OK or 404 |
+| GET | `/api/orders/restaurant/{restaurantId}` | Get orders for restaurant | 200 OK or 404 |
+| PUT | `/api/orders/{id}/status` | Update order status | 200 OK or 400/404 |
+| DELETE | `/api/orders/{id}` | Cancel order | 204 No Content or 404 |
 
 ## 📝 Request/Response Examples
 
@@ -287,6 +298,97 @@ GET http://localhost:8080/api/customers/1/addresses
 ]
 ```
 
+### Order Operations
+
+#### Create Order
+```bash
+POST http://localhost:8080/api/orders
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "restaurantId": 1,
+  "items": [
+    {
+      "menuItemId": 1,
+      "quantity": 2
+    }
+  ],
+  "specialInstructions": "Leave at the front door"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": 1,
+  "customerId": 1,
+  "restaurantId": 1,
+  "status": "PENDING",
+  "totalPrice": 25.98,
+  "createTimestamp": "2026-02-07T15:30:00",
+  "updateTimestamp": "2026-02-07T15:30:00",
+  "items": [
+    {
+      "id": 1,
+      "orderId": 1,
+      "menuItemId": 1,
+      "quantity": 2,
+      "price": 12.99,
+      "name": "Margherita Pizza"
+    }
+  ]
+}
+```
+
+#### Get Order by ID
+```bash
+GET http://localhost:8080/api/orders/1
+```
+
+**Response (200 OK):**
+```json
+{
+  "id": 1,
+  "customerId": 1,
+  "restaurantId": 1,
+  "status": "PENDING",
+  "totalPrice": 25.98,
+  "createTimestamp": "2026-02-07T15:30:00",
+  "updateTimestamp": "2026-02-07T15:30:00",
+  "items": [
+    {
+      "id": 1,
+      "orderId": 1,
+      "menuItemId": 1,
+      "quantity": 2,
+      "price": 12.99,
+      "name": "Margherita Pizza"
+    }
+  ]
+}
+```
+
+#### Get Orders for Customer
+```bash
+GET http://localhost:8080/api/orders/customer/1
+```
+
+**Response (200 OK):**
+```json
+[
+  {
+    "id": 1,
+    "customerId": 1,
+    "restaurantId": 1,
+    "status": "PENDING",
+    "totalPrice": 25.98,
+    "createTimestamp": "2026-02-07T15:30:00",
+    "updateTimestamp": "2026-02-07T15:30:00"
+  }
+]
+```
+
 ## ⚠️ Error Response Examples
 
 ### Validation Error (400)
@@ -352,22 +454,30 @@ src/main/java/com/jdgorman/fooddeliveryapi/
 │   ├── RestaurantController.java
 │   ├── MenuItemController.java
 │   ├── CustomerController.java
+│   ├── OrderController.java
 │   └── DeliveryAddressController.java
 ├── entity/             # JPA entities
 │   ├── Restaurant.java
 │   ├── MenuItem.java
-│   ├── MenuCategory.java (enum)
 │   ├── Customer.java
+│   ├── CustomerOrder.java
+│   ├── OrderItem.java
 │   └── DeliveryAddress.java
+├── enumerator/         # Enums
+│   ├── CustomerOrderStatus.java
+│   ├── MenuCategory.java
 ├── repository/         # Data access layer
 │   ├── RestaurantRepository.java
 │   ├── MenuItemRepository.java
 │   ├── CustomerRepository.java
+│   ├── CustomerOrderRepository.java
+│   ├── OrderItemRepository.java
 │   └── DeliveryAddressRepository.java
 ├── service/            # Business logic
 │   ├── RestaurantService.java
 │   ├── MenuItemService.java
 │   ├── CustomerService.java
+│   ├── CustomerOrderService.java
 │   └── DeliveryAddressService.java
 ├── dto/                # Data Transfer Objects
 │   ├── MenuItemRequest.java
@@ -376,6 +486,11 @@ src/main/java/com/jdgorman/fooddeliveryapi/
 │   ├── CustomerResponse.java
 │   ├── DeliveryAddressRequest.java
 │   ├── DeliveryAddressResponse.java
+│   ├── CustomerOrderRequest.java
+│   ├── CustomerOrderResponse.java
+│   ├── OrderItemRequest.java
+│   ├── OrderItemResponse.java
+│   ├── OrderStatusUpdateRequest.java
 │   └── ApiMessageResponse.java
 ├── exception/          # Custom exceptions and handlers
 │   ├── ResourceNotFoundException.java
@@ -417,18 +532,32 @@ src/main/java/com/jdgorman/fooddeliveryapi/
 - **isDefault**: Boolean - only one address per customer can be default
 - **Ownership**: Addresses can only be accessed/modified through their parent customer
 
+### Customer Order Entity
+- **customerId**: Required, must reference existing customer
+- **restaurantId**: Required, must reference existing restaurant
+- **status**: Required, must be one of the defined order statuses
+- **totalPrice**: Calculated as the sum of all associated order items
+- **Items**: Must contain at least one order item with a valid menu item reference
+
+### Order Item Entity
+- **orderId**: Required, must reference existing order
+- **menuItemId**: Required, must reference existing menu item
+- **quantity**: Required, must be greater than 0
+
 ## 🔗 Data Relationships
 
 ```
 Restaurant (1) -----> (Many) MenuItem
 Customer (1) -----> (Many) DeliveryAddress
-Customer (1) -----> (Many) Order [Coming Soon]
+Customer (1) -----> (Many) CustomerOrder
+Restaurant (1) -----> (Many) CustomerOrder
+CustomerOrder (1) -----> (Many) OrderItem
 ```
 
 ## 🧪 Testing
 
 You can test the API using:
-- **Postman**: Import the endpoints and test each operation
+- **Postman**: Import the endpoints and test each operation (Postman testsuite included in the repository)
 - **cURL**: Command-line testing
 - **H2 Console**: View database state in real-time
 
@@ -440,7 +569,11 @@ You can test the API using:
 4. **Add delivery addresses** to the customer (one default, others not)
 5. **Update** an address to be the new default
 6. **Verify** the previous default is now non-default
-7. **Delete** resources and verify cascade behavior
+7. **Create an order** for the customer
+8. **Add items** to the order
+9. **Update the order status** to IN_PROGRESS
+10. **Cancel the order** and verify the status is updated
+11. **Delete** resources and verify cascade behavior
 
 Example cURL commands:
 
@@ -467,8 +600,23 @@ curl -X POST http://localhost:8080/api/customers/1/addresses \
     "isDefault": true
   }'
 
-# Get all addresses
-curl http://localhost:8080/api/customers/1/addresses
+# Create an order
+curl -X POST http://localhost:8080/api/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customerId": 1,
+    "restaurantId": 1,
+    "items": [
+      {
+        "menuItemId": 1,
+        "quantity": 2
+      }
+    ],
+    "specialInstructions": "Leave at the front door"
+  }'
+
+# Get all orders for a customer
+curl http://localhost:8080/api/orders/customer/1
 ```
 
 ## 🔄 CI/CD Pipeline
@@ -496,8 +644,8 @@ Workflow files: `.github/workflows/ci.yml` and `.github/workflows/cd.yml`
 - [x] Menu item management
 - [x] Customer management
 - [x] Delivery address management
+- [x] Order creation and status tracking
 - [x] CI/CD pipeline
-- [ ] Order creation and tracking
 - [ ] Driver assignment and delivery tracking
 - [ ] Search and filtering capabilities
 - [ ] Reporting and analytics
@@ -521,4 +669,4 @@ This project is open source and available for educational purposes.
 
 ---
 
-**Current Version**: 0.0.4 - Customer Management Module
+**Current Version**: 0.0.5 - Customer Management Module

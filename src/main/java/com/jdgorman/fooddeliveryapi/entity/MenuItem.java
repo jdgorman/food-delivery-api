@@ -1,6 +1,7 @@
 package com.jdgorman.fooddeliveryapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.jdgorman.fooddeliveryapi.enumerator.MenuCategory;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;

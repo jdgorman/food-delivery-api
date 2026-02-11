@@ -2,7 +2,7 @@ package com.jdgorman.fooddeliveryapi.controller;
 
 import com.jdgorman.fooddeliveryapi.dto.MenuItemRequest;
 import com.jdgorman.fooddeliveryapi.dto.MenuItemResponse;
-import com.jdgorman.fooddeliveryapi.entity.MenuCategory;
+import com.jdgorman.fooddeliveryapi.enumerator.MenuCategory;
 import com.jdgorman.fooddeliveryapi.service.MenuItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

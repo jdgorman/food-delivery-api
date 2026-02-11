@@ -1,0 +1,221 @@
+package com.jdgorman.fooddeliveryapi.service;
+
+import com.jdgorman.fooddeliveryapi.dto.CustomerOrderRequest;
+import com.jdgorman.fooddeliveryapi.dto.CustomerOrderResponse;
+import com.jdgorman.fooddeliveryapi.dto.OrderItemRequest;
+import com.jdgorman.fooddeliveryapi.dto.OrderStatusUpdateRequest;
+import com.jdgorman.fooddeliveryapi.entity.*;
+import com.jdgorman.fooddeliveryapi.enumerator.MenuCategory;
+import com.jdgorman.fooddeliveryapi.enumerator.CustomerOrderStatus;
+import com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException;
+import com.jdgorman.fooddeliveryapi.repository.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class CustomerOrderServiceTest {
+
+    @Mock
+    private CustomerOrderRepository customerOrderRepository;
+
+    @Mock
+    private CustomerRepository customerRepository;
+
+    @Mock
+    private RestaurantRepository restaurantRepository;
+
+    @Mock
+    private DeliveryAddressRepository deliveryAddressRepository;
+
+    @Mock
+    private MenuItemRepository menuItemRepository;
+
+    @InjectMocks
+    private CustomerOrderService customerOrderService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+    @Test
+    @DisplayName("should create customer order successfully")
+    void shouldCreateCustomerOrderSuccessfully() {
+        CustomerOrderRequest request = new CustomerOrderRequest();
+        request.setCustomerId(1L);
+        request.setRestaurantId(1L);
+        request.setDeliveryAddressId(1L);
+        request.setItems(List.of(new OrderItemRequest(2L, 2)));
+
+        Customer customer = Customer.builder()
+                .id(1L)
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("jane.doe@example.com")
+                .phone("555-123-4567")
+                .build();
+
+        Restaurant restaurant = Restaurant.builder()
+                .id(1L)
+                .name("Test Restaurant")
+                .address("123 Test St")
+                .phone("555-123-4567")
+                .cuisineType("Test Cuisine")
+                .build();
+
+        DeliveryAddress address = DeliveryAddress.builder()
+                .id(1L)
+                .customer(customer)
+                .label("Home")
+                .streetAddress("123 Main St")
+                .city("Dallas")
+                .state("TX")
+                .zipCode("75001")
+                .isDefault(true)
+                .build();
+
+        MenuItem menuItem = MenuItem.builder()
+                .id(2L)
+                .name("Burger")
+                .price(BigDecimal.valueOf(10.00))
+                .category(MenuCategory.ENTREE)
+                .isAvailable(true)
+                .restaurant(restaurant)
+                .build();
+
+        CustomerOrder savedOrder = CustomerOrder.builder()
+                .id(1L)
+                .customer(customer)
+                .restaurant(restaurant)
+                .deliveryAddress(address)
+                .orderItems(List.of(OrderItem.builder()
+                        .id(1L)
+                        .order(new CustomerOrder())
+                        .menuItem(menuItem)
+                        .quantity(2)
+                        .priceAtOrder(BigDecimal.valueOf(10.00))
+                        .subtotal(BigDecimal.valueOf(20.00))
+                        .build()))
+                .subtotal(BigDecimal.valueOf(20.00))
+                .tax(BigDecimal.valueOf(1.65))
+                .deliveryFee(BigDecimal.valueOf(5.00))
+                .total(BigDecimal.valueOf(26.65))
+                .status(CustomerOrderStatus.PENDING)
+                .build();
+
+        when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
+        when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
+        when(deliveryAddressRepository.findById(1L)).thenReturn(Optional.of(address));
+        when(menuItemRepository.findById(2L)).thenReturn(Optional.of(menuItem));
+        when(customerOrderRepository.save(any(CustomerOrder.class))).thenReturn(savedOrder);
+
+        CustomerOrderResponse response = customerOrderService.createCustomerOrder(request);
+
+        assertNotNull(response);
+        assertEquals(1L, response.getId());
+        assertEquals(CustomerOrderStatus.PENDING, response.getStatus());
+        assertEquals(BigDecimal.valueOf(26.65), response.getTotal());
+    }
+
+    @Test
+    @DisplayName("should throw exception when customer order not found")
+    void shouldThrowExceptionWhenCustomerOrderNotFound() {
+        when(customerOrderRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> customerOrderService.getCustomerOrderById(1L));
+    }
+
+    @Test
+    @DisplayName("should update customer order status successfully")
+    void shouldUpdateCustomerOrderStatusSuccessfully() {
+        Customer customer = Customer.builder()
+                .id(1L)
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("jane.doe@example.com")
+                .phone("555-123-4567")
+                .build();
+
+        Restaurant restaurant = Restaurant.builder()
+                .id(1L)
+                .name("Test Restaurant")
+                .address("123 Test St")
+                .phone("555-123-4567")
+                .cuisineType("Test Cuisine")
+                .build();
+
+        DeliveryAddress address = DeliveryAddress.builder()
+                .id(1L)
+                .customer(customer)
+                .label("Home")
+                .streetAddress("123 Main St")
+                .city("Dallas")
+                .state("TX")
+                .zipCode("75001")
+                .isDefault(true)
+                .build();
+
+        MenuItem menuItem = MenuItem.builder()
+                .id(2L)
+                .name("Burger")
+                .price(BigDecimal.valueOf(10.00))
+                .category(MenuCategory.ENTREE)
+                .isAvailable(true)
+                .restaurant(restaurant)
+                .build();
+
+        CustomerOrder existingOrder = CustomerOrder.builder()
+                .id(1L)
+                .customer(customer)
+                .restaurant(restaurant)
+                .deliveryAddress(address)
+                .orderItems(List.of(OrderItem.builder()
+                        .id(1L)
+                        .order(new CustomerOrder())
+                        .menuItem(menuItem)
+                        .quantity(2)
+                        .priceAtOrder(BigDecimal.valueOf(10.00))
+                        .subtotal(BigDecimal.valueOf(20.00))
+                        .build()))
+                .subtotal(BigDecimal.valueOf(20.00))
+                .tax(BigDecimal.valueOf(1.65))
+                .deliveryFee(BigDecimal.valueOf(5.00))
+                .total(BigDecimal.valueOf(26.65))
+                .status(CustomerOrderStatus.PENDING)
+                .build();
+
+        CustomerOrder savedOrder = CustomerOrder.builder()
+                .id(1L)
+                .customer(customer)
+                .restaurant(restaurant)
+                .deliveryAddress(address)
+                .orderItems(existingOrder.getOrderItems())
+                .subtotal(existingOrder.getSubtotal())
+                .tax(existingOrder.getTax())
+                .deliveryFee(existingOrder.getDeliveryFee())
+                .total(existingOrder.getTotal())
+                .status(CustomerOrderStatus.CONFIRMED)
+                .build();
+
+        when(customerOrderRepository.findById(1L)).thenReturn(Optional.of(existingOrder));
+        when(customerOrderRepository.save(any(CustomerOrder.class))).thenReturn(savedOrder);
+
+        OrderStatusUpdateRequest request = new OrderStatusUpdateRequest();
+        request.setStatus(CustomerOrderStatus.CONFIRMED);
+
+        CustomerOrderResponse response = customerOrderService.updateCustomerOrderStatus(1L, request);
+
+        assertNotNull(response);
+        assertEquals(CustomerOrderStatus.CONFIRMED, response.getStatus());
+    }
+}
