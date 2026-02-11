@@ -46,8 +46,6 @@ public class RestaurantController {
      *
      * @param id the id of the restaurant to retrieve
      * @return HTTP 200 OK with the {@link Restaurant} when found
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if no restaurant with the
-     * given id exists
      */
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> getRestaurantById(@PathVariable Long id) {
@@ -63,8 +61,6 @@ public class RestaurantController {
      *
      * @param restaurant the {@link Restaurant} payload to create; fields are validated
      * @return HTTP 201 Created with the created {@link Restaurant}
-     * @throws com.jdgorman.fooddeliveryapi.exception.DuplicateResourceException if a restaurant with
-     * the same identifying properties already exists
      */
     @PostMapping(consumes = "application/json")
     public ResponseEntity<Restaurant> createRestaurant(@Valid @RequestBody Restaurant restaurant) {
@@ -81,8 +77,6 @@ public class RestaurantController {
      *
      * @param id the id of the restaurant to update
      * @param restaurant the {@link Restaurant} payload containing updated values; validated
-     * @return HTTP 200 OK with the updated {@link Restaurant} if the update succeeded, or
-     * HTTP 400/404 as described above
      */
     @PutMapping(value = "/{id}", consumes = "application/json")
     public ResponseEntity<Restaurant> updateRestaurant(@PathVariable Long id, @Valid @RequestBody Restaurant restaurant) {
@@ -101,7 +95,6 @@ public class RestaurantController {
      *
      * @param id the id of the restaurant to delete
      * @return HTTP 204 No Content when delete succeeds
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the restaurant does not exist
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable Long id) {

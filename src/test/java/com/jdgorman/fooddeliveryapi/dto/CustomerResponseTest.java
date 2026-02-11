@@ -19,8 +19,8 @@ class CustomerResponseTest {
                 .email("john.doe@example.com")
                 .phone("123-456-7890")
                 .addressCount(2)
-                .createdAt(now)
-                .updatedAt(now)
+                .createTimestamp(now)
+                .updateTimestamp(now)
                 .build();
 
         assertEquals(1L, response.getId());
@@ -29,8 +29,8 @@ class CustomerResponseTest {
         assertEquals("john.doe@example.com", response.getEmail());
         assertEquals("123-456-7890", response.getPhone());
         assertEquals(2, response.getAddressCount());
-        assertEquals(now, response.getCreatedAt());
-        assertEquals(now, response.getUpdatedAt());
+        assertEquals(now, response.getCreateTimestamp());
+        assertEquals(now, response.getUpdateTimestamp());
     }
 
     @Test
@@ -42,8 +42,8 @@ class CustomerResponseTest {
                 .email(null)
                 .phone(null)
                 .addressCount(null)
-                .createdAt(null)
-                .updatedAt(null)
+                .createTimestamp(null)
+                .updateTimestamp(null)
                 .build();
 
         assertEquals(null, response.getId());
@@ -52,7 +52,7 @@ class CustomerResponseTest {
         assertEquals(null, response.getEmail());
         assertEquals(null, response.getPhone());
         assertEquals(null, response.getAddressCount());
-        assertEquals(null, response.getCreatedAt());
-        assertEquals(null, response.getUpdatedAt());
+        assertEquals(null, response.getCreateTimestamp());
+        assertEquals(null, response.getUpdateTimestamp());
     }
 }

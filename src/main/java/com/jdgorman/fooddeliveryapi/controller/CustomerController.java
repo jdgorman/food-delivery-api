@@ -42,7 +42,6 @@ public class CustomerController {
      *
      * @param id the id of the customer to retrieve
      * @return HTTP 200 OK with the {@link CustomerResponse} if found
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if no customer with the given id exists
      */
     @GetMapping("/{id}")
     public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable Long id) {
@@ -55,8 +54,6 @@ public class CustomerController {
      *
      * @param request the {@link CustomerRequest} payload; validated using Bean Validation annotations
      * @return HTTP 201 Created with the created {@link CustomerResponse}
-     * @throws com.jdgorman.fooddeliveryapi.exception.DuplicateResourceException if a customer with the same email already exists
-     * @throws jakarta.validation.ConstraintViolationException if the request payload fails validation
      */
     @PostMapping
     public ResponseEntity<CustomerResponse> createCustomer(@Valid @RequestBody CustomerRequest request) {
@@ -70,9 +67,6 @@ public class CustomerController {
      * @param id      the id of the customer to update
      * @param request the {@link CustomerRequest} payload containing updated values; validated using Bean Validation
      * @return HTTP 200 OK with the updated {@link CustomerResponse}
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the customer does not exist
-     * @throws com.jdgorman.fooddeliveryapi.exception.DuplicateResourceException if the updated email conflicts with another customer
-     * @throws jakarta.validation.ConstraintViolationException if the request payload fails validation
      */
     @PutMapping("/{id}")
     public ResponseEntity<CustomerResponse> updateCustomer(
@@ -87,7 +81,6 @@ public class CustomerController {
      *
      * @param id the id of the customer to delete
      * @return HTTP 204 No Content when the delete succeeds
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the customer does not exist
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {

@@ -23,7 +23,6 @@ public class DeliveryAddressController {
      *
      * @param customerId the id of the customer whose addresses should be returned
      * @return HTTP 200 with a list of DeliveryAddressResponse objects (possibly empty)
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the customer does not exist
      */
     @GetMapping
     public ResponseEntity<List<DeliveryAddressResponse>> getAddressesByCustomer(
@@ -38,7 +37,6 @@ public class DeliveryAddressController {
      * @param customerId the id of the customer
      * @param addressId  the id of the delivery address to retrieve
      * @return HTTP 200 with the DeliveryAddressResponse
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the address does not exist or does not belong to the customer
      */
     @GetMapping("/{addressId}")
     public ResponseEntity<DeliveryAddressResponse> getAddressById(
@@ -54,8 +52,6 @@ public class DeliveryAddressController {
      * @param customerId the id of the customer to associate the new address with
      * @param request    the payload containing address fields; validated via Bean Validation
      * @return HTTP 201 with the created DeliveryAddressResponse
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the customer does not exist
-     * @throws jakarta.validation.ConstraintViolationException if the request fails validation
      */
     @PostMapping
     public ResponseEntity<DeliveryAddressResponse> createAddress(
@@ -72,8 +68,6 @@ public class DeliveryAddressController {
      * @param addressId  the id of the address to update
      * @param request    the payload with updated address fields; validated via Bean Validation
      * @return HTTP 200 with the updated DeliveryAddressResponse
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the address does not exist or does not belong to the customer
-     * @throws jakarta.validation.ConstraintViolationException if the request fails validation
      */
     @PutMapping("/{addressId}")
     public ResponseEntity<DeliveryAddressResponse> updateAddress(
@@ -90,7 +84,6 @@ public class DeliveryAddressController {
      * @param customerId the id of the customer who owns the address
      * @param addressId  the id of the address to delete
      * @return HTTP 204 No Content on success
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the address does not exist or does not belong to the customer
      */
     @DeleteMapping("/{addressId}")
     public ResponseEntity<Void> deleteAddress(

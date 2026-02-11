@@ -20,6 +20,6 @@ public class DeliveryAddressResponse {
     private String state;
     private String zipCode;
     private Boolean isDefault;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createTimestamp;
+    private LocalDateTime updateTimestamp;
 }

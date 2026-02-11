@@ -150,8 +150,8 @@ public class CustomerService {
                 .email(customer.getEmail())
                 .phone(customer.getPhone())
                 .addressCount(customer.getAddresses() != null ? customer.getAddresses().size() : 0)
-                .createdAt(customer.getCreateTimestamp())
-                .updatedAt(customer.getUpdateTimestamp())
+                .createTimestamp(customer.getCreateTimestamp())
+                .updateTimestamp(customer.getUpdateTimestamp())
                 .build();
     }
 }

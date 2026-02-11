@@ -103,7 +103,7 @@ public class DeliveryAddressService {
                 .city(request.getCity())
                 .state(request.getState())
                 .zipCode(request.getZipCode())
-                .isDefault(request.getIsDefault())
+                .isDefault(Boolean.TRUE.equals(request.getIsDefault()))
                 .build();
 
         DeliveryAddress saved = addressRepository.save(address);
@@ -136,7 +136,7 @@ public class DeliveryAddressService {
         }
 
         // If changing to default, unset any existing default
-        if (request.getIsDefault() && !address.getIsDefault()) {
+        if (Boolean.TRUE.equals(request.getIsDefault()) && !Boolean.TRUE.equals(address.getIsDefault())) {
             unsetDefaultDeliveryAddresses(customerId);
         }
 
@@ -145,7 +145,9 @@ public class DeliveryAddressService {
         address.setCity(request.getCity());
         address.setState(request.getState());
         address.setZipCode(request.getZipCode());
-        address.setIsDefault(request.getIsDefault());
+        if (request.getIsDefault() != null) {
+            address.setIsDefault(Boolean.TRUE.equals(request.getIsDefault()));
+        }
         address.setUpdateTimestamp(LocalDateTime.now());
 
         DeliveryAddress updated = addressRepository.save(address);
@@ -204,8 +206,8 @@ public class DeliveryAddressService {
                 .state(address.getState())
                 .zipCode(address.getZipCode())
                 .isDefault(address.getIsDefault())
-                .createdAt(address.getCreateTimestamp())
-                .updatedAt(address.getUpdateTimestamp())
+                .createTimestamp(address.getCreateTimestamp())
+                .updateTimestamp(address.getUpdateTimestamp())
                 .build();
     }
 }

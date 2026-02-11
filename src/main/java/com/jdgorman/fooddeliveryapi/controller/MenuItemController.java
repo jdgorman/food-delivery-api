@@ -33,7 +33,6 @@ public class MenuItemController {
      * @param restaurantId the id of the restaurant whose menu items should be returned
      * @param category     optional menu category to filter by (may be {@code null})
      * @return HTTP 200 OK with a list of {@link MenuItemResponse} objects; list may be empty
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the restaurant does not exist
      */
     @GetMapping("/restaurants/{restaurantId}/menu-items")
     public ResponseEntity<List<MenuItemResponse>> getMenuItemsByRestaurant(
@@ -55,8 +54,6 @@ public class MenuItemController {
      * @param restaurantId the id of the restaurant that owns the menu item
      * @param id           the id of the menu item to retrieve
      * @return HTTP 200 OK with the {@link MenuItemResponse}
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the menu item does not exist
-     *         or does not belong to the given restaurant
      */
     @GetMapping("/restaurants/{restaurantId}/menu-items/{id}")
     public ResponseEntity<MenuItemResponse> getMenuItemById(
@@ -73,8 +70,6 @@ public class MenuItemController {
      * @param request      the {@link MenuItemRequest} payload containing name, description, price,
      *                     category and availability; validated using Bean Validation
      * @return HTTP 201 Created with the created {@link MenuItemResponse}
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the restaurant does not exist
-     * @throws jakarta.validation.ConstraintViolationException if the request payload fails validation
      */
     @PostMapping("/restaurants/{restaurantId}/menu-items")
     public ResponseEntity<MenuItemResponse> createMenuItem(
@@ -92,8 +87,6 @@ public class MenuItemController {
      * @param id           the id of the menu item to update
      * @param request      the {@link MenuItemRequest} payload with updated values; validated using Bean Validation
      * @return HTTP 200 OK with the updated {@link MenuItemResponse}
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the menu item does not exist
-     *         or does not belong to the given restaurant
      */
     @PutMapping("/restaurants/{restaurantId}/menu-items/{id}")
     public ResponseEntity<MenuItemResponse> updateMenuItem(
@@ -110,8 +103,6 @@ public class MenuItemController {
      * @param restaurantId the id of the restaurant that owns the menu item
      * @param id           the id of the menu item to delete
      * @return HTTP 204 No Content when deletion succeeds
-     * @throws com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException if the menu item does not exist
-     *         or does not belong to the given restaurant
      */
     @DeleteMapping("/restaurants/{restaurantId}/menu-items/{id}")
     public ResponseEntity<Void> deleteMenuItem(

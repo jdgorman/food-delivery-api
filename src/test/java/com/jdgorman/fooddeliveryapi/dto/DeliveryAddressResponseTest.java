@@ -22,8 +22,8 @@ class DeliveryAddressResponseTest {
                 .state("TX")
                 .zipCode("75201")
                 .isDefault(true)
-                .createdAt(now)
-                .updatedAt(now)
+                .createTimestamp(now)
+                .updateTimestamp(now)
                 .build();
 
         assertEquals(1L, response.getId());
@@ -35,8 +35,8 @@ class DeliveryAddressResponseTest {
         assertEquals("TX", response.getState());
         assertEquals("75201", response.getZipCode());
         assertEquals(true, response.getIsDefault());
-        assertEquals(now, response.getCreatedAt());
-        assertEquals(now, response.getUpdatedAt());
+        assertEquals(now, response.getCreateTimestamp());
+        assertEquals(now, response.getUpdateTimestamp());
     }
 
     @Test
@@ -51,8 +51,8 @@ class DeliveryAddressResponseTest {
                 .state(null)
                 .zipCode(null)
                 .isDefault(null)
-                .createdAt(null)
-                .updatedAt(null)
+                .createTimestamp(null)
+                .updateTimestamp(null)
                 .build();
 
         assertEquals(null, response.getId());
@@ -64,7 +64,7 @@ class DeliveryAddressResponseTest {
         assertEquals(null, response.getState());
         assertEquals(null, response.getZipCode());
         assertEquals(null, response.getIsDefault());
-        assertEquals(null, response.getCreatedAt());
-        assertEquals(null, response.getUpdatedAt());
+        assertEquals(null, response.getCreateTimestamp());
+        assertEquals(null, response.getUpdateTimestamp());
     }
 }

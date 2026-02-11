@@ -347,7 +347,7 @@ GET http://localhost:8080/api/customers/1/addresses
 ## 🏗️ Project Structure
 
 ```
-src/main/java/com/yourname/fooddeliveryapi/
+src/main/java/com/jdgorman/fooddeliveryapi/
 ├── controller/          # REST controllers
 │   ├── RestaurantController.java
 │   ├── MenuItemController.java
