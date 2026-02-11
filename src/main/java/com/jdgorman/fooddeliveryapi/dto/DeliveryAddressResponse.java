@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @JsonPropertyOrder({ "id", "customerId", "customerName", "label", "streetAddress", "city", "state", "zipCode", "isDefault",
-        "createdAt", "updatedAt" })
+        "createTimestamp", "updateTimestamp"})
 @Builder
 public class DeliveryAddressResponse {
 
