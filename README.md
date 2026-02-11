@@ -308,6 +308,7 @@ Content-Type: application/json
 {
   "customerId": 1,
   "restaurantId": 1,
+  "deliveryAddressId": 1,
   "items": [
     {
       "menuItemId": 1,
@@ -325,17 +326,16 @@ Content-Type: application/json
   "customerId": 1,
   "restaurantId": 1,
   "status": "PENDING",
-  "totalPrice": 25.98,
+  "total": 25.98,
   "createTimestamp": "2026-02-07T15:30:00",
   "updateTimestamp": "2026-02-07T15:30:00",
   "items": [
     {
       "id": 1,
-      "orderId": 1,
       "menuItemId": 1,
+      "menuItemName": "Margherita Pizza",
       "quantity": 2,
-      "price": 12.99,
-      "name": "Margherita Pizza"
+      "priceAtOrder": 12.99
     }
   ]
 }
@@ -353,17 +353,16 @@ GET http://localhost:8080/api/orders/1
   "customerId": 1,
   "restaurantId": 1,
   "status": "PENDING",
-  "totalPrice": 25.98,
+  "total": 25.98,
   "createTimestamp": "2026-02-07T15:30:00",
   "updateTimestamp": "2026-02-07T15:30:00",
   "items": [
     {
       "id": 1,
-      "orderId": 1,
       "menuItemId": 1,
+      "menuItemName": "Margherita Pizza",
       "quantity": 2,
-      "price": 12.99,
-      "name": "Margherita Pizza"
+      "priceAtOrder": 12.99
     }
   ]
 }
@@ -382,7 +381,7 @@ GET http://localhost:8080/api/orders/customer/1
     "customerId": 1,
     "restaurantId": 1,
     "status": "PENDING",
-    "totalPrice": 25.98,
+    "total": 25.98,
     "createTimestamp": "2026-02-07T15:30:00",
     "updateTimestamp": "2026-02-07T15:30:00"
   }
@@ -536,8 +535,10 @@ src/main/java/com/jdgorman/fooddeliveryapi/
 - **customerId**: Required, must reference existing customer
 - **restaurantId**: Required, must reference existing restaurant
 - **status**: Required, must be one of the defined order statuses
-- **totalPrice**: Calculated as the sum of all associated order items
-- **Items**: Must contain at least one order item with a valid menu item reference
+- **subtotal**: Calculated as the sum of all associated order items (before tax and delivery fee)
+- **tax**: Calculated tax amount applied to the order
+- **deliveryFee**: Delivery fee applied to the order (if applicable)
+- **total**: Final order total (subtotal + tax + deliveryFee
 
 ### Order Item Entity
 - **orderId**: Required, must reference existing order
@@ -571,7 +572,7 @@ You can test the API using:
 6. **Verify** the previous default is now non-default
 7. **Create an order** for the customer
 8. **Add items** to the order
-9. **Update the order status** to IN_PROGRESS
+9. **Update the order status** to PREPARING
 10. **Cancel the order** and verify the status is updated
 11. **Delete** resources and verify cascade behavior
 
@@ -606,6 +607,7 @@ curl -X POST http://localhost:8080/api/orders \
   -d '{
     "customerId": 1,
     "restaurantId": 1,
+    "deliveryAddressId": 1,
     "items": [
       {
         "menuItemId": 1,
@@ -669,4 +671,4 @@ This project is open source and available for educational purposes.
 
 ---
 
-**Current Version**: 0.0.5 - Customer Management Module
+**Current Version**: 0.0.5 - Customer & Order Management Module

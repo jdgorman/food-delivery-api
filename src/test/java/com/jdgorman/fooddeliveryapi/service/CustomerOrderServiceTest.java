@@ -218,4 +218,259 @@ class CustomerOrderServiceTest {
         assertNotNull(response);
         assertEquals(CustomerOrderStatus.CONFIRMED, response.getStatus());
     }
+
+    @Test
+    @DisplayName("should throw exception when updating from terminal state DELIVERED")
+    void shouldThrowExceptionWhenUpdatingFromTerminalStateDelivered() {
+        Customer customer = Customer.builder()
+                .id(1L)
+                .firstName("Jane")
+                .lastName("Doe")
+                .build();
+
+        Restaurant restaurant = Restaurant.builder()
+                .id(1L)
+                .name("Test Restaurant")
+                .build();
+
+        DeliveryAddress address = DeliveryAddress.builder()
+                .id(1L)
+                .customer(customer)
+                .streetAddress("123 Main St")
+                .city("Dallas")
+                .state("TX")
+                .zipCode("75001")
+                .build();
+
+        CustomerOrder deliveredOrder = CustomerOrder.builder()
+                .id(1L)
+                .customer(customer)
+                .restaurant(restaurant)
+                .deliveryAddress(address)
+                .orderItems(List.of())
+                .subtotal(BigDecimal.valueOf(20.00))
+                .tax(BigDecimal.valueOf(1.65))
+                .deliveryFee(BigDecimal.valueOf(5.00))
+                .total(BigDecimal.valueOf(26.65))
+                .status(CustomerOrderStatus.DELIVERED)
+                .build();
+
+        when(customerOrderRepository.findById(1L)).thenReturn(Optional.of(deliveredOrder));
+
+        OrderStatusUpdateRequest request = new OrderStatusUpdateRequest();
+        request.setStatus(CustomerOrderStatus.CANCELLED);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+                customerOrderService.updateCustomerOrderStatus(1L, request));
+
+        assertEquals("Cannot update order status from DELIVERED", exception.getMessage());
+        verify(customerOrderRepository, never()).save(any(CustomerOrder.class));
+    }
+
+    @Test
+    @DisplayName("should throw exception when updating from terminal state CANCELLED")
+    void shouldThrowExceptionWhenUpdatingFromTerminalStateCancelled() {
+        Customer customer = Customer.builder()
+                .id(1L)
+                .firstName("Jane")
+                .lastName("Doe")
+                .build();
+
+        Restaurant restaurant = Restaurant.builder()
+                .id(1L)
+                .name("Test Restaurant")
+                .build();
+
+        DeliveryAddress address = DeliveryAddress.builder()
+                .id(1L)
+                .customer(customer)
+                .streetAddress("123 Main St")
+                .city("Dallas")
+                .state("TX")
+                .zipCode("75001")
+                .build();
+
+        CustomerOrder cancelledOrder = CustomerOrder.builder()
+                .id(1L)
+                .customer(customer)
+                .restaurant(restaurant)
+                .deliveryAddress(address)
+                .orderItems(List.of())
+                .subtotal(BigDecimal.valueOf(20.00))
+                .tax(BigDecimal.valueOf(1.65))
+                .deliveryFee(BigDecimal.valueOf(5.00))
+                .total(BigDecimal.valueOf(26.65))
+                .status(CustomerOrderStatus.CANCELLED)
+                .build();
+
+        when(customerOrderRepository.findById(1L)).thenReturn(Optional.of(cancelledOrder));
+
+        OrderStatusUpdateRequest request = new OrderStatusUpdateRequest();
+        request.setStatus(CustomerOrderStatus.CONFIRMED);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+                customerOrderService.updateCustomerOrderStatus(1L, request));
+
+        assertEquals("Cannot update order status from CANCELLED", exception.getMessage());
+        verify(customerOrderRepository, never()).save(any(CustomerOrder.class));
+    }
+
+    @Test
+    @DisplayName("should throw exception when attempting backward transition")
+    void shouldThrowExceptionWhenAttemptingBackwardTransition() {
+        Customer customer = Customer.builder()
+                .id(1L)
+                .firstName("Jane")
+                .lastName("Doe")
+                .build();
+
+        Restaurant restaurant = Restaurant.builder()
+                .id(1L)
+                .name("Test Restaurant")
+                .build();
+
+        DeliveryAddress address = DeliveryAddress.builder()
+                .id(1L)
+                .customer(customer)
+                .streetAddress("123 Main St")
+                .city("Dallas")
+                .state("TX")
+                .zipCode("75001")
+                .build();
+
+        CustomerOrder readyOrder = CustomerOrder.builder()
+                .id(1L)
+                .customer(customer)
+                .restaurant(restaurant)
+                .deliveryAddress(address)
+                .orderItems(List.of())
+                .subtotal(BigDecimal.valueOf(20.00))
+                .tax(BigDecimal.valueOf(1.65))
+                .deliveryFee(BigDecimal.valueOf(5.00))
+                .total(BigDecimal.valueOf(26.65))
+                .status(CustomerOrderStatus.READY)
+                .build();
+
+        when(customerOrderRepository.findById(1L)).thenReturn(Optional.of(readyOrder));
+
+        OrderStatusUpdateRequest request = new OrderStatusUpdateRequest();
+        request.setStatus(CustomerOrderStatus.CONFIRMED);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+                customerOrderService.updateCustomerOrderStatus(1L, request));
+
+        assertEquals("Cannot change status from READY to CONFIRMED", exception.getMessage());
+        verify(customerOrderRepository, never()).save(any(CustomerOrder.class));
+    }
+
+    @Test
+    @DisplayName("should allow transition to CANCELLED from non-terminal state")
+    void shouldAllowTransitionToCancelledFromNonTerminalState() {
+        Customer customer = Customer.builder()
+                .id(1L)
+                .firstName("Jane")
+                .lastName("Doe")
+                .build();
+
+        Restaurant restaurant = Restaurant.builder()
+                .id(1L)
+                .name("Test Restaurant")
+                .build();
+
+        DeliveryAddress address = DeliveryAddress.builder()
+                .id(1L)
+                .customer(customer)
+                .streetAddress("123 Main St")
+                .city("Dallas")
+                .state("TX")
+                .zipCode("75001")
+                .build();
+
+        MenuItem menuItem = MenuItem.builder()
+                .id(2L)
+                .name("Burger")
+                .price(BigDecimal.valueOf(10.00))
+                .category(MenuCategory.ENTREE)
+                .restaurant(restaurant)
+                .build();
+
+        CustomerOrder preparingOrder = CustomerOrder.builder()
+                .id(1L)
+                .customer(customer)
+                .restaurant(restaurant)
+                .deliveryAddress(address)
+                .orderItems(List.of(OrderItem.builder()
+                        .id(1L)
+                        .order(new CustomerOrder())
+                        .menuItem(menuItem)
+                        .quantity(2)
+                        .priceAtOrder(BigDecimal.valueOf(10.00))
+                        .subtotal(BigDecimal.valueOf(20.00))
+                        .build()))
+                .subtotal(BigDecimal.valueOf(20.00))
+                .tax(BigDecimal.valueOf(1.65))
+                .deliveryFee(BigDecimal.valueOf(5.00))
+                .total(BigDecimal.valueOf(26.65))
+                .status(CustomerOrderStatus.PREPARING)
+                .build();
+
+        CustomerOrder cancelledOrder = CustomerOrder.builder()
+                .id(1L)
+                .customer(customer)
+                .restaurant(restaurant)
+                .deliveryAddress(address)
+                .orderItems(preparingOrder.getOrderItems())
+                .subtotal(preparingOrder.getSubtotal())
+                .tax(preparingOrder.getTax())
+                .deliveryFee(preparingOrder.getDeliveryFee())
+                .total(preparingOrder.getTotal())
+                .status(CustomerOrderStatus.CANCELLED)
+                .build();
+
+        when(customerOrderRepository.findById(1L)).thenReturn(Optional.of(preparingOrder));
+        when(customerOrderRepository.save(any(CustomerOrder.class))).thenReturn(cancelledOrder);
+
+        OrderStatusUpdateRequest request = new OrderStatusUpdateRequest();
+        request.setStatus(CustomerOrderStatus.CANCELLED);
+
+        CustomerOrderResponse response = customerOrderService.updateCustomerOrderStatus(1L, request);
+
+        assertNotNull(response);
+        assertEquals(CustomerOrderStatus.CANCELLED, response.getStatus());
+        verify(customerOrderRepository).save(any(CustomerOrder.class));
+    }
+
+    @Test
+    @DisplayName("should throw exception when cancelling already delivered order")
+    void shouldThrowExceptionWhenCancellingAlreadyDeliveredOrder() {
+        CustomerOrder deliveredOrder = CustomerOrder.builder()
+                .id(1L)
+                .status(CustomerOrderStatus.DELIVERED)
+                .build();
+
+        when(customerOrderRepository.findById(1L)).thenReturn(Optional.of(deliveredOrder));
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+                customerOrderService.cancelCustomerOrder(1L));
+
+        assertEquals("Cannot cancel order. Order is already DELIVERED", exception.getMessage());
+        verify(customerOrderRepository, never()).save(any(CustomerOrder.class));
+    }
+
+    @Test
+    @DisplayName("should throw exception when cancelling order in OUT_FOR_DELIVERY status")
+    void shouldThrowExceptionWhenCancellingOrderInOutForDeliveryStatus() {
+        CustomerOrder outForDeliveryOrder = CustomerOrder.builder()
+                .id(1L)
+                .status(CustomerOrderStatus.OUT_FOR_DELIVERY)
+                .build();
+
+        when(customerOrderRepository.findById(1L)).thenReturn(Optional.of(outForDeliveryOrder));
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+                customerOrderService.cancelCustomerOrder(1L));
+
+        assertEquals("Cannot cancel order. Order is already OUT_FOR_DELIVERY", exception.getMessage());
+        verify(customerOrderRepository, never()).save(any(CustomerOrder.class));
+    }
 }
