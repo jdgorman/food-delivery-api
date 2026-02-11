@@ -81,13 +81,8 @@ public class MenuItemController {
             @PathVariable Long restaurantId,
             @Valid @RequestBody MenuItemRequest request) {
 
-        try {
-            MenuItemResponse created = menuItemService.createMenuItem(restaurantId, request);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } catch (Exception e) {
-            System.out.println("Error creating menu item: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        MenuItemResponse created = menuItemService.createMenuItem(restaurantId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     /**

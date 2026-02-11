@@ -92,7 +92,7 @@ public class DeliveryAddressService {
                 ));
 
         // If this is marked as default, unset any existing default
-        if (request.getIsDefault()) {
+        if (Boolean.TRUE.equals(request.getIsDefault())) {
             unsetDefaultDeliveryAddresses(customerId);
         }
 
@@ -183,10 +183,8 @@ public class DeliveryAddressService {
      */
     private void unsetDefaultDeliveryAddresses(Long customerId) {
         List<DeliveryAddress> defaultAddresses = addressRepository.findByCustomerIdAndIsDefaultTrue(customerId);
-        defaultAddresses.forEach(addr -> {
-            addr.setIsDefault(false);
-            addressRepository.save(addr);
-        });
+        defaultAddresses.forEach(addr -> addr.setIsDefault(false));
+        addressRepository.saveAll(defaultAddresses);
     }
 
     /**

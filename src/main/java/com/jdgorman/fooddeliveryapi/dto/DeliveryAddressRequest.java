@@ -27,5 +27,6 @@ public class DeliveryAddressRequest {
     @NotBlank(message = "Zip code is required")
     private String zipCode;
 
+    @Builder.Default
     private Boolean isDefault = false;
 }

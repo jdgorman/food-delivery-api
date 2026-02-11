@@ -53,6 +53,8 @@ public class Restaurant {
         LocalDateTime now = LocalDateTime.now();
         this.createTimestamp = now;
         this.updateTimestamp = now;
-        this.active = true;
+        if (this.active == null) {
+            this.active = true;
+        }
     }
 }

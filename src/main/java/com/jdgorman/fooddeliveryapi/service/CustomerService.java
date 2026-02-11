@@ -149,7 +149,7 @@ public class CustomerService {
                 .lastName(customer.getLastName())
                 .email(customer.getEmail())
                 .phone(customer.getPhone())
-                .addressCount(customer.getAddresses().size())
+                .addressCount(customer.getAddresses() != null ? customer.getAddresses().size() : 0)
                 .createdAt(customer.getCreateTimestamp())
                 .updatedAt(customer.getUpdateTimestamp())
                 .build();

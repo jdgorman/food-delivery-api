@@ -132,7 +132,7 @@ Content-Type: application/json
 {
   "name": "Pizza Palace",
   "address": "123 Main St, Dallas, TX",
-  "phone": "555-1234",
+  "phone": "423-555-1234",
   "cuisineType": "Italian"
 }
 ```
@@ -143,7 +143,7 @@ Content-Type: application/json
   "id": 1,
   "name": "Pizza Palace",
   "address": "123 Main St, Dallas, TX",
-  "phone": "555-1234",
+  "phone": "423-555-1234",
   "cuisineType": "Italian",
   "isActive": true,
   "createdAt": "2026-01-27T10:30:00"
@@ -198,7 +198,7 @@ Content-Type: application/json
   "firstName": "John",
   "lastName": "Doe",
   "email": "john.doe@example.com",
-  "phone": "555-9999"
+  "phone": "423-555-9999"
 }
 ```
 
@@ -209,7 +209,7 @@ Content-Type: application/json
   "firstName": "John",
   "lastName": "Doe",
   "email": "john.doe@example.com",
-  "phone": "555-9999",
+  "phone": "423-555-9999",
   "addressCount": 0,
   "createdAt": "2026-02-07T15:20:00",
   "updatedAt": "2026-02-07T15:20:00"
@@ -225,7 +225,7 @@ Content-Type: application/json
   "firstName": "Jane",
   "lastName": "Smith",
   "email": "jane.smith@example.com",
-  "phone": "555-8888"
+  "phone": "423-555-8888"
 }
 ```
 
@@ -452,7 +452,7 @@ curl -X POST http://localhost:8080/api/customers \
     "firstName": "John",
     "lastName": "Doe",
     "email": "john.doe@example.com",
-    "phone": "555-9999"
+    "phone": "423-555-9999"
   }'
 
 # Add a delivery address
