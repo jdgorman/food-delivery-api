@@ -97,7 +97,6 @@ public class MenuItemService {
     /**
      * Create a new menu item for a restaurant.
      *
-     * The request is converted to an entity and saved. The returned DTO reflects the persisted entity.
      *
      * @param restaurantId id of the restaurant to create the menu item for
      * @param request      DTO containing menu item properties (name, description, price, category, availability)
@@ -126,9 +125,6 @@ public class MenuItemService {
 
     /**
      * Update an existing menu item for a restaurant.
-     *
-     * Only the fields present on the {@code request} are applied; availability will keep its current value
-     * if not provided. The method validates ownership before applying updates.
      *
      * @param restaurantId id of the restaurant that should own the menu item
      * @param id           id of the menu item to update
