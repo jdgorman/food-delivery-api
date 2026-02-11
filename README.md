@@ -145,7 +145,7 @@ Content-Type: application/json
   "address": "123 Main St, Dallas, TX",
   "phone": "423-555-1234",
   "cuisineType": "Italian",
-  "isActive": true,
+  "active": true,
   "createTimestamp": "2026-01-27T10:30:00"
 }
 ```

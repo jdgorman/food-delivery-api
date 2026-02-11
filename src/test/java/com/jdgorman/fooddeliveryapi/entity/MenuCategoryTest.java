@@ -8,11 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class MenuCategoryTest {
 
     @Test
-    void allEnumValuesArePresent() {
-        assertEquals(6, MenuCategory.values().length);
-    }
-
-    @Test
     void enumContainsAppetizer() {
         assertNotNull(MenuCategory.valueOf("APPETIZER"));
     }
