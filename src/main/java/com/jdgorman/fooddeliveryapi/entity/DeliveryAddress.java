@@ -2,52 +2,53 @@ package com.jdgorman.fooddeliveryapi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "menu_item")
+@Table(name = "delivery_address")
 @Data
-@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 @NoArgsConstructor
 @AllArgsConstructor
-public class MenuItem {
+public class DeliveryAddress {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Item name is required")
-    @Column(nullable = false)
-    private String name;
-
-    private String description;
-
-    @NotNull(message = "Price is required")
-    @DecimalMin(value = "0.01", message = "Price must be greater than 0")
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
-
-    @NotNull(message = "Category is required")
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private MenuCategory category;
-
-    @Column(nullable = false)
-    private Boolean isAvailable = true;
-
-    @NotNull(message = "Restaurant is required")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id", nullable = false)
-    private Restaurant restaurant;
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
+
+    @NotBlank(message = "Address label is required")
+    @Column(nullable = false)
+    private String label;
+
+    @NotBlank(message = "Street address is required")
+    @Column(nullable = false)
+    private String streetAddress;
+
+    @NotBlank(message = "City is required")
+    @Column(nullable = false)
+    private String city;
+
+    @NotBlank(message = "State is required")
+    @Column(nullable = false)
+    private String state;
+
+    @NotBlank(message = "Zip code is required")
+    @Column(nullable = false)
+    private String zipCode;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private Boolean isDefault = false;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createTimestamp;

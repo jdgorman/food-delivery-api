@@ -16,6 +16,12 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service responsible for menu item business logic.
+ * <p>
+ * Provides methods to create, read, update and delete menu items belonging to restaurants.
+ * All returned objects are {@link MenuItemResponse} DTOs; entities are managed internally.
+ */
 @Service
 @RequiredArgsConstructor
 public class MenuItemService {
@@ -24,9 +30,11 @@ public class MenuItemService {
     private final RestaurantRepository restaurantRepository;
 
     /**
-     * Get all menu items for a specific restaurant
-     * @param restaurantId
-     * @return List<MenuItemResponse>
+     * Retrieve all menu items for a specific restaurant.
+     *
+     * @param restaurantId id of the restaurant whose menu items are requested
+     * @return a list of {@link MenuItemResponse} DTOs representing the restaurant's menu items; never null
+     * @throws ResourceNotFoundException if the restaurant with the provided id does not exist
      */
     public List<MenuItemResponse> getMenuItemsByRestaurant(Long restaurantId) {
         // Verify restaurant exists
@@ -42,10 +50,12 @@ public class MenuItemService {
     }
 
     /**
-     * Get a specific menu item by ID for a restaurant
-     * @param restaurantId
-     * @param id
-     * @return MenuItemResponse
+     * Retrieve a specific menu item by id and ensure it belongs to the provided restaurant.
+     *
+     * @param restaurantId id of the restaurant which should own the menu item
+     * @param id           id of the menu item to retrieve
+     * @return a {@link MenuItemResponse} representing the requested menu item
+     * @throws ResourceNotFoundException if the menu item does not exist or does not belong to the restaurant
      */
     public MenuItemResponse getMenuItemById(Long restaurantId, Long id) {
         MenuItem menuItem = menuItemRepository.findById(id)
@@ -64,10 +74,12 @@ public class MenuItemService {
     }
 
     /**
-     * Get menu items for a restaurant filtered by category
-     * @param restaurantId
-     * @param category
-     * @return List<MenuItemResponse>
+     * Retrieve menu items for a restaurant filtered by category.
+     *
+     * @param restaurantId id of the restaurant whose menu items are requested
+     * @param category     category to filter by (required)
+     * @return a list of {@link MenuItemResponse} matching the provided category; never null
+     * @throws ResourceNotFoundException if the restaurant with the provided id does not exist
      */
     public List<MenuItemResponse> getMenuItemsByRestaurantAndCategory(Long restaurantId, MenuCategory category) {
         // Verify restaurant exists
@@ -83,10 +95,13 @@ public class MenuItemService {
     }
 
     /**
-     * Create a new menu item for a restaurant
-     * @param restaurantId
-     * @param request MenuItemRequest containing menu item details
-     * @return MenuItemResponse
+     * Create a new menu item for a restaurant.
+     *
+     *
+     * @param restaurantId id of the restaurant to create the menu item for
+     * @param request      DTO containing menu item properties (name, description, price, category, availability)
+     * @return {@link MenuItemResponse} representing the created menu item
+     * @throws ResourceNotFoundException if the restaurant with the provided id does not exist
      */
     @Transactional
     public MenuItemResponse createMenuItem(Long restaurantId, MenuItemRequest request) {
@@ -95,24 +110,27 @@ public class MenuItemService {
                         "Restaurant with id " + restaurantId + " does not exist"
                 ));
 
-        MenuItem menuItem = new MenuItem();
-        menuItem.setName(request.getName());
-        menuItem.setDescription(request.getDescription());
-        menuItem.setPrice(request.getPrice());
-        menuItem.setCategory(request.getCategory());
-        menuItem.setIsAvailable(request.getIsAvailable() != null ? request.getIsAvailable() : true);
-        menuItem.setRestaurant(restaurant);
+        MenuItem menuItem = MenuItem.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .price(request.getPrice())
+                .category(request.getCategory())
+                .isAvailable(request.getIsAvailable() != null ? request.getIsAvailable() : true)
+                .restaurant(restaurant)
+                .build();
 
         MenuItem saved = menuItemRepository.save(menuItem);
         return convertToResponse(saved);
     }
 
     /**
-     * Update an existing menu item for a restaurant
-     * @param restaurantId
-     * @param id
-     * @param request MenuItemRequest containing updated fields
-     * @return MenuItemResponse
+     * Update an existing menu item for a restaurant.
+     *
+     * @param restaurantId id of the restaurant that should own the menu item
+     * @param id           id of the menu item to update
+     * @param request      DTO containing updated properties
+     * @return {@link MenuItemResponse} representing the updated menu item
+     * @throws ResourceNotFoundException if the menu item does not exist or does not belong to the restaurant
      */
     @Transactional
     public MenuItemResponse updateMenuItem(Long restaurantId, Long id, MenuItemRequest request) {
@@ -142,9 +160,11 @@ public class MenuItemService {
     }
 
     /**
-     * Delete a menu item by ID for a restaurant
-     * @param restaurantId
-     * @param id
+     * Delete a menu item by id for a restaurant after validating ownership.
+     *
+     * @param restaurantId id of the restaurant that should own the menu item
+     * @param id           id of the menu item to delete
+     * @throws ResourceNotFoundException if the menu item does not exist or does not belong to the restaurant
      */
     @Transactional
     public void deleteMenuItem(Long restaurantId, Long id) {
@@ -164,22 +184,23 @@ public class MenuItemService {
     }
 
     /**
-     * Convert MenuItem entity to MenuItemResponse DTO
-     * @param menuItem
-     * @return MenuItemResponse
+     * Convert MenuItem entity to MenuItemResponse DTO.
+     *
+     * @param menuItem the entity to convert
+     * @return a populated {@link MenuItemResponse}
      */
     private MenuItemResponse convertToResponse(MenuItem menuItem) {
-        MenuItemResponse response = new MenuItemResponse();
-        response.setId(menuItem.getId());
-        response.setName(menuItem.getName());
-        response.setDescription(menuItem.getDescription());
-        response.setPrice(menuItem.getPrice());
-        response.setCategory(menuItem.getCategory());
-        response.setIsAvailable(menuItem.getIsAvailable());
-        response.setRestaurantId(menuItem.getRestaurant().getId());
-        response.setRestaurantName(menuItem.getRestaurant().getName());
-        response.setCreateTimestamp(menuItem.getCreateTimestamp());
-        response.setUpdateTimestamp(menuItem.getUpdateTimestamp());
-        return response;
+        return MenuItemResponse.builder()
+                .id(menuItem.getId())
+                .name(menuItem.getName())
+                .description(menuItem.getDescription())
+                .price(menuItem.getPrice())
+                .category(menuItem.getCategory())
+                .isAvailable(menuItem.getIsAvailable())
+                .restaurantId(menuItem.getRestaurant().getId())
+                .restaurantName(menuItem.getRestaurant().getName())
+                .createTimestamp(menuItem.getCreateTimestamp())
+                .updateTimestamp(menuItem.getUpdateTimestamp())
+                .build();
     }
 }

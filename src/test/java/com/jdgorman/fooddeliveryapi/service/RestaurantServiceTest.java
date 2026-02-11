@@ -4,6 +4,8 @@ import com.jdgorman.fooddeliveryapi.entity.Restaurant;
 import com.jdgorman.fooddeliveryapi.exception.DuplicateResourceException;
 import com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException;
 import com.jdgorman.fooddeliveryapi.repository.RestaurantRepository;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -23,13 +25,21 @@ class RestaurantServiceTest {
     @InjectMocks
     private RestaurantService restaurantService;
 
-    public RestaurantServiceTest() {
-        MockitoAnnotations.openMocks(this);
+    private AutoCloseable closeable;
+
+    @BeforeEach
+    void setUp() {
+        closeable = MockitoAnnotations.openMocks(this);
+    }
+
+    @AfterEach
+    void tearDown() throws Exception {
+        if (closeable != null) closeable.close();
     }
 
     @Test
     void getAllRestaurantsReturnsListOfRestaurants() {
-        when(restaurantRepository.findAll()).thenReturn(List.of(new Restaurant(), new Restaurant()));
+        when(restaurantRepository.findAll()).thenReturn(List.of(Restaurant.builder().build(), Restaurant.builder().build()));
 
         List<Restaurant> restaurants = restaurantService.getAllRestaurants();
 
@@ -38,8 +48,7 @@ class RestaurantServiceTest {
 
     @Test
     void getRestaurantByIdReturnsRestaurantWhenFound() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(1L);
+        Restaurant restaurant = Restaurant.builder().id(1L).build();
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
 
         Restaurant result = restaurantService.getRestaurantById(1L);
@@ -56,9 +65,10 @@ class RestaurantServiceTest {
 
     @Test
     void createRestaurantSavesAndReturnsRestaurantWhenNotDuplicate() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("Test Restaurant");
-        restaurant.setAddress("123 Test Street");
+        Restaurant restaurant = Restaurant.builder()
+                .name("Test Restaurant")
+                .address("123 Test Street")
+                .build();
         when(restaurantRepository.existsByNameAndAddress("Test Restaurant", "123 Test Street")).thenReturn(false);
         when(restaurantRepository.save(restaurant)).thenReturn(restaurant);
 
@@ -70,9 +80,10 @@ class RestaurantServiceTest {
 
     @Test
     void createRestaurantThrowsExceptionWhenDuplicate() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("Test Restaurant");
-        restaurant.setAddress("123 Test Street");
+        Restaurant restaurant = Restaurant.builder()
+                .name("Test Restaurant")
+                .address("123 Test Street")
+                .build();
         when(restaurantRepository.existsByNameAndAddress("Test Restaurant", "123 Test Street")).thenReturn(true);
 
         assertThrows(DuplicateResourceException.class, () -> restaurantService.createRestaurant(restaurant));
@@ -80,11 +91,11 @@ class RestaurantServiceTest {
 
     @Test
     void updateRestaurantUpdatesAndReturnsRestaurantWhenFound() {
-        Restaurant existing = new Restaurant();
-        existing.setId(1L);
-        Restaurant updated = new Restaurant();
-        updated.setName("Updated Name");
-        updated.setAddress("Updated Address");
+        Restaurant existing = Restaurant.builder().id(1L).build();
+        Restaurant updated = Restaurant.builder()
+                .name("Updated Name")
+                .address("Updated Address")
+                .build();
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(existing));
         when(restaurantRepository.save(existing)).thenReturn(existing);
 
@@ -96,7 +107,7 @@ class RestaurantServiceTest {
 
     @Test
     void updateRestaurantThrowsExceptionWhenNotFound() {
-        Restaurant updated = new Restaurant();
+        Restaurant updated = Restaurant.builder().build();
         when(restaurantRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class, () -> restaurantService.updateRestaurant(1L, updated));

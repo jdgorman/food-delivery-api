@@ -16,11 +16,12 @@ class RestaurantRepositoryTest {
 
     @Test
     void existsByNameAndAddressReturnsTrueForExistingRestaurant() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("Test Restaurant");
-        restaurant.setAddress("123 Test Street");
-        restaurant.setCuisineType("Test Cuisine");
-        restaurant.setPhone("123-456-7890");
+        Restaurant restaurant = Restaurant.builder()
+                .name("Test Restaurant")
+                .address("123 Test Street")
+                .cuisineType("Test Cuisine")
+                .phone("123-456-7890")
+                .build();
         restaurantRepository.save(restaurant);
 
         boolean exists = restaurantRepository.existsByNameAndAddress("Test Restaurant", "123 Test Street");
@@ -44,11 +45,12 @@ class RestaurantRepositoryTest {
 
     @Test
     void existsByNameAndAddressReturnsFalseForPartialMatch() {
-        Restaurant restaurant = new Restaurant();
-        restaurant.setName("Partial Match Restaurant");
-        restaurant.setAddress("789 Partial Street");
-        restaurant.setCuisineType("Partial Cuisine");
-        restaurant.setPhone("987-654-3210");
+        Restaurant restaurant = Restaurant.builder()
+                .name("Partial Match Restaurant")
+                .address("789 Partial Street")
+                .cuisineType("Partial Cuisine")
+                .phone("987-654-3210")
+                .build();
         restaurantRepository.save(restaurant);
 
         boolean exists = restaurantRepository.existsByNameAndAddress("Partial Match Restaurant", "Wrong Address");

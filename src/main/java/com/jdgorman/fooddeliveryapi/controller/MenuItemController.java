@@ -12,6 +12,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller that manages menu items for restaurants.
+ * <p>
+ * Endpoints are mounted under the <code>/api</code> base path. This controller delegates
+ * business logic to {@link MenuItemService} and accepts/returns DTOs: {@link MenuItemRequest}
+ * and {@link MenuItemResponse}.
+ */
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -20,10 +27,12 @@ public class MenuItemController {
     private final MenuItemService menuItemService;
 
     /**
-     * Get all menu items for a restaurant, optionally filtered by category
-     * @param restaurantId
-     * @param category
-     * @return ResponseEntity<List<MenuItemResponse>>
+     * Retrieve all menu items for a restaurant. If a {@code category} query parameter is provided,
+     * the results are filtered to only include items from that category.
+     *
+     * @param restaurantId the id of the restaurant whose menu items should be returned
+     * @param category     optional menu category to filter by (may be {@code null})
+     * @return HTTP 200 OK with a list of {@link MenuItemResponse} objects; list may be empty
      */
     @GetMapping("/restaurants/{restaurantId}/menu-items")
     public ResponseEntity<List<MenuItemResponse>> getMenuItemsByRestaurant(
@@ -40,10 +49,11 @@ public class MenuItemController {
     }
 
     /**
-     * Get a specific menu item by ID for a restaurant
-     * @param restaurantId
-     * @param id
-     * @return ResponseEntity<MenuItemResponse>
+     * Retrieve a specific menu item by id for the given restaurant.
+     *
+     * @param restaurantId the id of the restaurant that owns the menu item
+     * @param id           the id of the menu item to retrieve
+     * @return HTTP 200 OK with the {@link MenuItemResponse}
      */
     @GetMapping("/restaurants/{restaurantId}/menu-items/{id}")
     public ResponseEntity<MenuItemResponse> getMenuItemById(
@@ -54,25 +64,29 @@ public class MenuItemController {
     }
 
     /**
-     * Create a new menu item for a restaurant
-     * @param restaurantId
-     * @param request MenuItemRequest containing name, description, price, category, and availability
-     * @return ResponseEntity<MenuItemResponse>
+     * Create a new menu item for the specified restaurant.
+     *
+     * @param restaurantId the id of the restaurant to add the menu item to
+     * @param request      the {@link MenuItemRequest} payload containing name, description, price,
+     *                     category and availability; validated using Bean Validation
+     * @return HTTP 201 Created with the created {@link MenuItemResponse}
      */
     @PostMapping("/restaurants/{restaurantId}/menu-items")
     public ResponseEntity<MenuItemResponse> createMenuItem(
             @PathVariable Long restaurantId,
             @Valid @RequestBody MenuItemRequest request) {
+
         MenuItemResponse created = menuItemService.createMenuItem(restaurantId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     /**
-     * Update an existing menu item for a restaurant
-     * @param restaurantId
-     * @param id
-     * @param request MenuItemRequest containing name, description, price, category, and availability
-     * @return ResponseEntity<MenuItemResponse>
+     * Update an existing menu item for a restaurant.
+     *
+     * @param restaurantId the id of the restaurant that owns the menu item
+     * @param id           the id of the menu item to update
+     * @param request      the {@link MenuItemRequest} payload with updated values; validated using Bean Validation
+     * @return HTTP 200 OK with the updated {@link MenuItemResponse}
      */
     @PutMapping("/restaurants/{restaurantId}/menu-items/{id}")
     public ResponseEntity<MenuItemResponse> updateMenuItem(
@@ -84,10 +98,11 @@ public class MenuItemController {
     }
 
     /**
-     * Delete a menu item from a restaurant
-     * @param restaurantId
-     * @param id
-     * @return ResponseEntity<Void>
+     * Delete a menu item from a restaurant.
+     *
+     * @param restaurantId the id of the restaurant that owns the menu item
+     * @param id           the id of the menu item to delete
+     * @return HTTP 204 No Content when deletion succeeds
      */
     @DeleteMapping("/restaurants/{restaurantId}/menu-items/{id}")
     public ResponseEntity<Void> deleteMenuItem(
