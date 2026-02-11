@@ -146,7 +146,7 @@ Content-Type: application/json
   "phone": "423-555-1234",
   "cuisineType": "Italian",
   "isActive": true,
-  "createdAt": "2026-01-27T10:30:00"
+  "createTimestamp": "2026-01-27T10:30:00"
 }
 ```
 
@@ -177,8 +177,8 @@ Content-Type: application/json
   "isAvailable": true,
   "restaurantId": 1,
   "restaurantName": "Pizza Palace",
-  "createdAt": "2026-01-27T10:35:00",
-  "updatedAt": "2026-01-27T10:35:00"
+  "createTimestamp": "2026-01-27T10:35:00",
+  "updateTimestamp": "2026-01-27T10:35:00"
 }
 ```
 
@@ -211,8 +211,8 @@ Content-Type: application/json
   "email": "john.doe@example.com",
   "phone": "423-555-9999",
   "addressCount": 0,
-  "createdAt": "2026-02-07T15:20:00",
-  "updatedAt": "2026-02-07T15:20:00"
+  "createTimestamp": "2026-02-07T15:20:00",
+  "updateTimestamp": "2026-02-07T15:20:00"
 }
 ```
 
@@ -258,8 +258,8 @@ Content-Type: application/json
   "state": "TX",
   "zipCode": "75001",
   "isDefault": true,
-  "createdAt": "2026-02-07T15:25:00",
-  "updatedAt": "2026-02-07T15:25:00"
+  "createTimestamp": "2026-02-07T15:25:00",
+  "updateTimestamp": "2026-02-07T15:25:00"
 }
 ```
 
@@ -281,8 +281,8 @@ GET http://localhost:8080/api/customers/1/addresses
     "state": "TX",
     "zipCode": "75001",
     "isDefault": true,
-    "createdAt": "2026-02-07T15:25:00",
-    "updatedAt": "2026-02-07T15:25:00"
+    "createTimestamp": "2026-02-07T15:25:00",
+    "updateTimestamp": "2026-02-07T15:25:00"
   }
 ]
 ```

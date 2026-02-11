@@ -1,5 +1,6 @@
 package com.jdgorman.fooddeliveryapi.entity;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -12,8 +13,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CustomerTest {
 
-    private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    private final static ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
+
+    @AfterAll
+    static void shutdownValidatorFactory() {
+        factory.close();
+    }
 
     @Test
     void customerIsCreatedWithValidData() {

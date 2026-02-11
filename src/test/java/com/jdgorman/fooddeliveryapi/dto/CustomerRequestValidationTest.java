@@ -1,5 +1,6 @@
 package com.jdgorman.fooddeliveryapi.dto;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -13,11 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CustomerRequestValidationTest {
 
-    private final Validator validator;
+    private final static ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    private final Validator validator = factory.getValidator();
 
-    public CustomerRequestValidationTest() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        this.validator = factory.getValidator();
+    @AfterAll
+    static void shutdownValidatorFactory() {
+        factory.close();
     }
 
     @Test
