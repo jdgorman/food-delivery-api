@@ -538,7 +538,7 @@ src/main/java/com/jdgorman/fooddeliveryapi/
 - **subtotal**: Calculated as the sum of all associated order items (before tax and delivery fee)
 - **tax**: Calculated tax amount applied to the order
 - **deliveryFee**: Delivery fee applied to the order (if applicable)
-- **total**: Final order total (subtotal + tax + deliveryFee
+- **total**: Final order total (subtotal + tax + deliveryFee)
 
 ### Order Item Entity
 - **orderId**: Required, must reference existing order

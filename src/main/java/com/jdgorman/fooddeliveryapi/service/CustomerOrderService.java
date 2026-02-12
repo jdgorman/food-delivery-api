@@ -67,6 +67,46 @@ public class CustomerOrderService {
             );
         }
 
+        // Fetch all menu items in a single query to avoid N+1
+        List<Long> menuItemIds = request.getItems().stream()
+                .map(OrderItemRequest::getMenuItemId)
+                .collect(Collectors.toList());
+
+        List<MenuItem> menuItems = menuItemRepository.findAllById(menuItemIds);
+
+        // Validate all requested menu items were found
+        if (menuItems.size() != menuItemIds.size()) {
+            List<Long> foundIds = menuItems.stream()
+                    .map(MenuItem::getId)
+                    .collect(Collectors.toList());
+            List<Long> missingIds = menuItemIds.stream()
+                    .filter(id -> !foundIds.contains(id))
+                    .collect(Collectors.toList());
+            throw new ResourceNotFoundException(
+                    "Menu items with ids " + missingIds + " do not exist"
+            );
+        }
+
+        // Create a map for efficient lookup
+        var menuItemMap = menuItems.stream()
+                .collect(Collectors.toMap(MenuItem::getId, item -> item));
+
+        // Validate all menu items belong to the restaurant and are available
+        for (MenuItem menuItem : menuItems) {
+            if (!menuItem.getRestaurant().getId().equals(request.getRestaurantId())) {
+                throw new ResourceNotFoundException(
+                        "Menu item with id " + menuItem.getId() +
+                                " does not belong to restaurant " + request.getRestaurantId()
+                );
+            }
+
+            if (!menuItem.getIsAvailable()) {
+                throw new IllegalStateException(
+                        "Menu item '" + menuItem.getName() + "' is currently unavailable"
+                );
+            }
+        }
+
         // Create order
         CustomerOrder order = CustomerOrder.builder()
                 .customer(customer)
@@ -80,25 +120,7 @@ public class CustomerOrderService {
         BigDecimal subtotal = BigDecimal.ZERO;
 
         for (OrderItemRequest itemRequest : request.getItems()) {
-            MenuItem menuItem = menuItemRepository.findById(itemRequest.getMenuItemId())
-                    .orElseThrow(() -> new ResourceNotFoundException(
-                            "Menu item with id " + itemRequest.getMenuItemId() + " does not exist"
-                    ));
-
-            // Validate menu item belongs to the restaurant
-            if (!menuItem.getRestaurant().getId().equals(request.getRestaurantId())) {
-                throw new ResourceNotFoundException(
-                        "Menu item with id " + itemRequest.getMenuItemId() +
-                                " does not belong to restaurant " + request.getRestaurantId()
-                );
-            }
-
-            // Check if menu item is available
-            if (!menuItem.getIsAvailable()) {
-                throw new IllegalStateException(
-                        "Menu item '" + menuItem.getName() + "' is currently unavailable"
-                );
-            }
+            MenuItem menuItem = menuItemMap.get(itemRequest.getMenuItemId());
 
             BigDecimal itemSubtotal = menuItem.getPrice()
                     .multiply(new BigDecimal(itemRequest.getQuantity()))
@@ -243,16 +265,24 @@ public class CustomerOrderService {
             );
         }
 
-        // Can't go backwards in the workflow (except to CANCELLED)
-        if (newStatus != CustomerOrderStatus.CANCELLED) {
-            int currentOrder = getStatusCustomerOrder(currentStatus);
-            int newOrder = getStatusCustomerOrder(newStatus);
-
-            if (newOrder < currentOrder) {
+        // Cancellation is only allowed from PENDING or CONFIRMED
+        if (newStatus == CustomerOrderStatus.CANCELLED) {
+            if (currentStatus != CustomerOrderStatus.PENDING && currentStatus != CustomerOrderStatus.CONFIRMED) {
                 throw new IllegalStateException(
-                        "Cannot change status from " + currentStatus + " to " + newStatus
+                        "Cannot cancel order. Order is already " + currentStatus
                 );
             }
+            return; // Valid cancellation, no further checks needed
+        }
+
+        // Can't go backwards in the workflow
+        int currentOrder = getStatusOfCustomerOrder(currentStatus);
+        int newOrder = getStatusOfCustomerOrder(newStatus);
+
+        if (newOrder < currentOrder) {
+            throw new IllegalStateException(
+                    "Cannot change status from " + currentStatus + " to " + newStatus
+            );
         }
     }
 
@@ -262,7 +292,7 @@ public class CustomerOrderService {
      * @param status order status
      * @return numeric position in the workflow
      */
-    private int getStatusCustomerOrder(CustomerOrderStatus status) {
+    private int getStatusOfCustomerOrder(CustomerOrderStatus status) {
         return switch (status) {
             case PENDING -> 1;
             case CONFIRMED -> 2;

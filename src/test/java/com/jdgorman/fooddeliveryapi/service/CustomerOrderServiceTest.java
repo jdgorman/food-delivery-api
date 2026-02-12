@@ -116,7 +116,7 @@ class CustomerOrderServiceTest {
         when(customerRepository.findById(1L)).thenReturn(Optional.of(customer));
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
         when(deliveryAddressRepository.findById(1L)).thenReturn(Optional.of(address));
-        when(menuItemRepository.findById(2L)).thenReturn(Optional.of(menuItem));
+        when(menuItemRepository.findAllById(List.of(2L))).thenReturn(List.of(menuItem));
         when(customerOrderRepository.save(any(CustomerOrder.class))).thenReturn(savedOrder);
 
         CustomerOrderResponse response = customerOrderService.createCustomerOrder(request);
@@ -364,8 +364,56 @@ class CustomerOrderServiceTest {
     }
 
     @Test
-    @DisplayName("should allow transition to CANCELLED from non-terminal state")
-    void shouldAllowTransitionToCancelledFromNonTerminalState() {
+    @DisplayName("should throw exception when attempting to cancel from PREPARING state")
+    void shouldThrowExceptionWhenAttemptingToCancelFromPreparingState() {
+        Customer customer = Customer.builder()
+                .id(1L)
+                .firstName("Jane")
+                .lastName("Doe")
+                .build();
+
+        Restaurant restaurant = Restaurant.builder()
+                .id(1L)
+                .name("Test Restaurant")
+                .build();
+
+        DeliveryAddress address = DeliveryAddress.builder()
+                .id(1L)
+                .customer(customer)
+                .streetAddress("123 Main St")
+                .city("Dallas")
+                .state("TX")
+                .zipCode("75001")
+                .build();
+
+        CustomerOrder preparingOrder = CustomerOrder.builder()
+                .id(1L)
+                .customer(customer)
+                .restaurant(restaurant)
+                .deliveryAddress(address)
+                .orderItems(List.of())
+                .subtotal(BigDecimal.valueOf(20.00))
+                .tax(BigDecimal.valueOf(1.65))
+                .deliveryFee(BigDecimal.valueOf(5.00))
+                .total(BigDecimal.valueOf(26.65))
+                .status(CustomerOrderStatus.PREPARING)
+                .build();
+
+        when(customerOrderRepository.findById(1L)).thenReturn(Optional.of(preparingOrder));
+
+        OrderStatusUpdateRequest request = new OrderStatusUpdateRequest();
+        request.setStatus(CustomerOrderStatus.CANCELLED);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, () ->
+                customerOrderService.updateCustomerOrderStatus(1L, request));
+
+        assertEquals("Cannot cancel order. Order is already PREPARING", exception.getMessage());
+        verify(customerOrderRepository, never()).save(any(CustomerOrder.class));
+    }
+
+    @Test
+    @DisplayName("should allow transition to CANCELLED from PENDING state")
+    void shouldAllowTransitionToCancelledFromPendingState() {
         Customer customer = Customer.builder()
                 .id(1L)
                 .firstName("Jane")
@@ -394,7 +442,7 @@ class CustomerOrderServiceTest {
                 .restaurant(restaurant)
                 .build();
 
-        CustomerOrder preparingOrder = CustomerOrder.builder()
+        CustomerOrder pendingOrder = CustomerOrder.builder()
                 .id(1L)
                 .customer(customer)
                 .restaurant(restaurant)
@@ -411,7 +459,7 @@ class CustomerOrderServiceTest {
                 .tax(BigDecimal.valueOf(1.65))
                 .deliveryFee(BigDecimal.valueOf(5.00))
                 .total(BigDecimal.valueOf(26.65))
-                .status(CustomerOrderStatus.PREPARING)
+                .status(CustomerOrderStatus.PENDING)
                 .build();
 
         CustomerOrder cancelledOrder = CustomerOrder.builder()
@@ -419,15 +467,15 @@ class CustomerOrderServiceTest {
                 .customer(customer)
                 .restaurant(restaurant)
                 .deliveryAddress(address)
-                .orderItems(preparingOrder.getOrderItems())
-                .subtotal(preparingOrder.getSubtotal())
-                .tax(preparingOrder.getTax())
-                .deliveryFee(preparingOrder.getDeliveryFee())
-                .total(preparingOrder.getTotal())
+                .orderItems(pendingOrder.getOrderItems())
+                .subtotal(pendingOrder.getSubtotal())
+                .tax(pendingOrder.getTax())
+                .deliveryFee(pendingOrder.getDeliveryFee())
+                .total(pendingOrder.getTotal())
                 .status(CustomerOrderStatus.CANCELLED)
                 .build();
 
-        when(customerOrderRepository.findById(1L)).thenReturn(Optional.of(preparingOrder));
+        when(customerOrderRepository.findById(1L)).thenReturn(Optional.of(pendingOrder));
         when(customerOrderRepository.save(any(CustomerOrder.class))).thenReturn(cancelledOrder);
 
         OrderStatusUpdateRequest request = new OrderStatusUpdateRequest();
