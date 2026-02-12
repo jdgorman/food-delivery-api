@@ -1,6 +1,6 @@
 package com.jdgorman.fooddeliveryapi.dto;
 
-import com.jdgorman.fooddeliveryapi.entity.MenuCategory;
+import com.jdgorman.fooddeliveryapi.enumerator.MenuCategory;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

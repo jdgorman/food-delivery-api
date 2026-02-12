@@ -1,7 +1,7 @@
 package com.jdgorman.fooddeliveryapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.jdgorman.fooddeliveryapi.entity.MenuCategory;
+import com.jdgorman.fooddeliveryapi.enumerator.MenuCategory;
 import lombok.Builder;
 import lombok.Data;
 

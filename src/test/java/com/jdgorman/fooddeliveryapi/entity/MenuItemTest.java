@@ -1,5 +1,6 @@
 package com.jdgorman.fooddeliveryapi.entity;
 
+import com.jdgorman.fooddeliveryapi.enumerator.MenuCategory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import jakarta.validation.ConstraintViolation;

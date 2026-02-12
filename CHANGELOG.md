@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+
+## [0.0.5] - 2026-02-11
+
+### Added
+
+- CustomerOrder and OrderItem entities with persistence and validation.
+- Customer order status enum and order-related DTOs.
+- Customer order service and order controller endpoints under `/api/orders`.
+- Repository tests for orders and order items plus service/controller tests for order flows.
+
+### Changed
+
+- Updated README with order management endpoints, relationships, and project structure.
+
 ## [0.0.4] - 2026-02-10
 
 ### Added

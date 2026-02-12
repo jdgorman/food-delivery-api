@@ -44,7 +44,6 @@ public class CustomerService {
      *
      * @param id the id of the customer to fetch
      * @return {@link CustomerResponse} for the requested customer
-     * @throws ResourceNotFoundException if no customer with the given id exists
      */
     public CustomerResponse getCustomerById(Long id) {
         Customer customer = customerRepository.findById(id)
@@ -62,7 +61,6 @@ public class CustomerService {
      *
      * @param request the {@link CustomerRequest} payload containing firstName, lastName, email and phone
      * @return {@link CustomerResponse} representing the created customer
-     * @throws DuplicateResourceException if a customer with the same email already exists
      */
     @Transactional
     public CustomerResponse createCustomer(CustomerRequest request) {
@@ -92,8 +90,6 @@ public class CustomerService {
      * @param id      id of the customer to update
      * @param request {@link CustomerRequest} containing fields to update
      * @return {@link CustomerResponse} representing the updated customer
-     * @throws ResourceNotFoundException   if the customer with the given id does not exist
-     * @throws DuplicateResourceException  if the requested email is already used by another customer
      */
     @Transactional
     public CustomerResponse updateCustomer(Long id, CustomerRequest request) {
@@ -124,7 +120,6 @@ public class CustomerService {
      * Delete a customer by id.
      *
      * @param id id of the customer to delete
-     * @throws ResourceNotFoundException if the customer with the given id does not exist
      */
     @Transactional
     public void deleteCustomer(Long id) {

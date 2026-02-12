@@ -34,7 +34,6 @@ public class DeliveryAddressService {
      *
      * @param customerId the id of the customer whose addresses should be returned
      * @return a list of {@link DeliveryAddressResponse} DTOs for the customer's addresses; may be empty
-     * @throws ResourceNotFoundException if the customer with {@code customerId} does not exist
      */
     public List<DeliveryAddressResponse> getDeliveryAddressesByCustomer(Long customerId) {
         // Verify customer exists
@@ -55,7 +54,6 @@ public class DeliveryAddressService {
      * @param customerId the id of the customer who should own the address
      * @param addressId  the id of the address to retrieve
      * @return a {@link DeliveryAddressResponse} DTO for the requested address
-     * @throws ResourceNotFoundException if the address does not exist or does not belong to the customer
      */
     public DeliveryAddressResponse getDeliveryAddressById(Long customerId, Long addressId) {
         DeliveryAddress address = addressRepository.findById(addressId)
@@ -82,7 +80,6 @@ public class DeliveryAddressService {
      * @param customerId the id of the customer to associate the new address with
      * @param request    the {@link DeliveryAddressRequest} payload containing address fields
      * @return the created {@link DeliveryAddressResponse} DTO
-     * @throws ResourceNotFoundException if the customer does not exist
      */
     @Transactional
     public DeliveryAddressResponse createDeliveryAddress(Long customerId, DeliveryAddressRequest request) {
@@ -119,7 +116,6 @@ public class DeliveryAddressService {
      * @param addressId  the id of the address to update
      * @param request     the {@link DeliveryAddressRequest} payload containing updated values
      * @return the updated {@link DeliveryAddressResponse} DTO
-     * @throws ResourceNotFoundException if the address does not exist or does not belong to the customer
      */
     @Transactional
     public DeliveryAddressResponse updateDeliveryAddress(Long customerId, Long addressId, DeliveryAddressRequest request) {
@@ -159,7 +155,6 @@ public class DeliveryAddressService {
      *
      * @param customerId the id of the customer who should own the address
      * @param addressId  the id of the address to delete
-     * @throws ResourceNotFoundException if the address does not exist or does not belong to the customer
      */
     @Transactional
     public void deleteDeliveryAddress(Long customerId, Long addressId) {

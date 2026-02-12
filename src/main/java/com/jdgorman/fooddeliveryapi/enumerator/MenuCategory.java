@@ -1,4 +1,4 @@
-package com.jdgorman.fooddeliveryapi.entity;
+package com.jdgorman.fooddeliveryapi.enumerator;
 
 public enum MenuCategory {
     APPETIZER,
