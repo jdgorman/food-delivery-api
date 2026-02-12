@@ -1,8 +1,8 @@
 package com.jdgorman.fooddeliveryapi.entity;
 
+import com.jdgorman.fooddeliveryapi.enumerator.MenuCategory;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class MenuCategoryTest {
