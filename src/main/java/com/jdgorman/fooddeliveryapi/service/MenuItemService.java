@@ -2,7 +2,7 @@ package com.jdgorman.fooddeliveryapi.service;
 
 import com.jdgorman.fooddeliveryapi.dto.MenuItemRequest;
 import com.jdgorman.fooddeliveryapi.dto.MenuItemResponse;
-import com.jdgorman.fooddeliveryapi.entity.MenuCategory;
+import com.jdgorman.fooddeliveryapi.enumerator.MenuCategory;
 import com.jdgorman.fooddeliveryapi.entity.MenuItem;
 import com.jdgorman.fooddeliveryapi.entity.Restaurant;
 import com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException;
@@ -34,7 +34,6 @@ public class MenuItemService {
      *
      * @param restaurantId id of the restaurant whose menu items are requested
      * @return a list of {@link MenuItemResponse} DTOs representing the restaurant's menu items; never null
-     * @throws ResourceNotFoundException if the restaurant with the provided id does not exist
      */
     public List<MenuItemResponse> getMenuItemsByRestaurant(Long restaurantId) {
         // Verify restaurant exists
@@ -55,7 +54,6 @@ public class MenuItemService {
      * @param restaurantId id of the restaurant which should own the menu item
      * @param id           id of the menu item to retrieve
      * @return a {@link MenuItemResponse} representing the requested menu item
-     * @throws ResourceNotFoundException if the menu item does not exist or does not belong to the restaurant
      */
     public MenuItemResponse getMenuItemById(Long restaurantId, Long id) {
         MenuItem menuItem = menuItemRepository.findById(id)
@@ -79,7 +77,6 @@ public class MenuItemService {
      * @param restaurantId id of the restaurant whose menu items are requested
      * @param category     category to filter by (required)
      * @return a list of {@link MenuItemResponse} matching the provided category; never null
-     * @throws ResourceNotFoundException if the restaurant with the provided id does not exist
      */
     public List<MenuItemResponse> getMenuItemsByRestaurantAndCategory(Long restaurantId, MenuCategory category) {
         // Verify restaurant exists
@@ -101,7 +98,6 @@ public class MenuItemService {
      * @param restaurantId id of the restaurant to create the menu item for
      * @param request      DTO containing menu item properties (name, description, price, category, availability)
      * @return {@link MenuItemResponse} representing the created menu item
-     * @throws ResourceNotFoundException if the restaurant with the provided id does not exist
      */
     @Transactional
     public MenuItemResponse createMenuItem(Long restaurantId, MenuItemRequest request) {
@@ -130,7 +126,6 @@ public class MenuItemService {
      * @param id           id of the menu item to update
      * @param request      DTO containing updated properties
      * @return {@link MenuItemResponse} representing the updated menu item
-     * @throws ResourceNotFoundException if the menu item does not exist or does not belong to the restaurant
      */
     @Transactional
     public MenuItemResponse updateMenuItem(Long restaurantId, Long id, MenuItemRequest request) {
@@ -164,7 +159,6 @@ public class MenuItemService {
      *
      * @param restaurantId id of the restaurant that should own the menu item
      * @param id           id of the menu item to delete
-     * @throws ResourceNotFoundException if the menu item does not exist or does not belong to the restaurant
      */
     @Transactional
     public void deleteMenuItem(Long restaurantId, Long id) {

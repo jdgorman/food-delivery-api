@@ -1,6 +1,6 @@
 package com.jdgorman.fooddeliveryapi.dto;
 
-import com.jdgorman.fooddeliveryapi.entity.MenuCategory;
+import com.jdgorman.fooddeliveryapi.enumerator.MenuCategory;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

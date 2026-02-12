@@ -1,6 +1,6 @@
 package com.jdgorman.fooddeliveryapi.repository;
 
-import com.jdgorman.fooddeliveryapi.entity.MenuCategory;
+import com.jdgorman.fooddeliveryapi.enumerator.MenuCategory;
 import com.jdgorman.fooddeliveryapi.entity.MenuItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
