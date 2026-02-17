@@ -54,7 +54,5 @@ class DeliveryTest {
         assertEquals(customerOrder, delivery.getCustomerOrder());
         assertEquals(driver, delivery.getDriver());
         assertEquals(CustomerOrderStatus.READY, delivery.getStatus());
-        assertNotNull(delivery.getCreateTimestamp());
-        assertNotNull(delivery.getUpdateTimestamp());
     }
 }

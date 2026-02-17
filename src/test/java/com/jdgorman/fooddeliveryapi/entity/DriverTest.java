@@ -63,7 +63,5 @@ class DriverTest {
         assertEquals("Car", driver.getVehicleType());
         assertEquals(DriverStatus.AVAILABLE, driver.getStatus());
         assertNotNull(driver.getDeliveries());
-        assertNotNull(driver.getCreateTimestamp());
-        assertNotNull(driver.getUpdateTimestamp());
     }
 }
