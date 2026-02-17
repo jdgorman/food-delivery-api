@@ -13,6 +13,8 @@ A robust RESTful API for managing food delivery operations, built with Spring Bo
 - **Customer Management**: Customer registration and profile management
 - **Delivery Address Management**: Multiple addresses per customer with default address support
 - **Order Management**: Create, retrieve, update status, and cancel customer orders
+- **Driver Management**: CRUD operations for drivers and availability/status updates
+- **Delivery Management**: Create deliveries, retrieve by order/driver, and update pickup/delivery status
 - **Input Validation**: Comprehensive validation for all incoming requests
 - **Duplicate Prevention**: Database constraints and service-layer checks
 - **Exception Handling**: Global exception handling with meaningful error messages
@@ -130,6 +132,29 @@ The application uses H2 in-memory database for development. Database is automati
 | GET | `/api/orders/restaurant/{restaurantId}` | Get orders for restaurant | 200 OK or 404 |
 | PUT | `/api/orders/{id}/status` | Update order status | 200 OK or 400/404 |
 | DELETE | `/api/orders/{id}` | Cancel order | 204 No Content or 404 |
+
+### Driver Management
+
+| Method | Endpoint | Description | Response |
+|--------|----------|-------------|----------|
+| GET | `/api/drivers` | Get all drivers | 200 OK with list |
+| GET | `/api/drivers/available` | Get available drivers | 200 OK with list |
+| GET | `/api/drivers/{id}` | Get driver by ID | 200 OK or 404 |
+| POST | `/api/drivers` | Create new driver | 201 Created or 400/409 |
+| PUT | `/api/drivers/{id}` | Update driver | 200 OK or 404/409 |
+| PUT | `/api/drivers/{id}/status` | Update driver status | 200 OK or 400/404 |
+| DELETE | `/api/drivers/{id}` | Delete driver | 204 No Content or 404 |
+
+### Delivery Management
+
+| Method | Endpoint | Description | Response |
+|--------|----------|-------------|----------|
+| POST | `/api/deliveries` | Create a delivery for a READY order | 201 Created or 400/404 |
+| GET | `/api/deliveries/{id}` | Get delivery by ID | 200 OK or 404 |
+| GET | `/api/deliveries/order/{orderId}` | Get delivery by order ID | 200 OK or 404 |
+| GET | `/api/deliveries/driver/{driverId}` | Get deliveries by driver | 200 OK or 404 |
+| PUT | `/api/deliveries/{id}/pickup` | Mark delivery as picked up | 200 OK or 400/404 |
+| PUT | `/api/deliveries/{id}/complete` | Mark delivery as delivered | 200 OK or 400/404 |
 
 ## 📝 Request/Response Examples
 
@@ -388,6 +413,96 @@ GET http://localhost:8080/api/orders/customer/1
 ]
 ```
 
+### Driver Operations
+
+#### Create Driver
+```bash
+POST http://localhost:8080/api/drivers
+Content-Type: application/json
+
+{
+  "firstName": "Jamie",
+  "lastName": "Wells",
+  "email": "jamie.wells@example.com",
+  "phone": "555-555-0101",
+  "vehicleType": "Car",
+  "licensePlate": "ABC-1234"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": 1,
+  "firstName": "Jamie",
+  "lastName": "Wells",
+  "email": "jamie.wells@example.com",
+  "phone": "555-555-0101",
+  "vehicleType": "Car",
+  "licensePlate": "ABC-1234",
+  "status": "AVAILABLE",
+  "activeDeliveries": 0,
+  "totalDeliveries": 0,
+  "createTimestamp": "2026-02-17T10:30:00",
+  "updateTimestamp": "2026-02-17T10:30:00"
+}
+```
+
+#### Update Driver Status
+```bash
+PUT http://localhost:8080/api/drivers/1/status
+Content-Type: application/json
+
+{
+  "status": "BUSY"
+}
+```
+
+### Delivery Operations
+
+#### Create Delivery
+```bash
+POST http://localhost:8080/api/deliveries
+Content-Type: application/json
+
+{
+  "orderId": 1,
+  "driverId": 1,
+  "estimatedDeliveryTime": "2026-02-17T11:15:00"
+}
+```
+
+**Response (201 Created):**
+```json
+{
+  "id": 1,
+  "orderId": 1,
+  "customerName": "John Doe",
+  "restaurantName": "Pizza Palace",
+  "deliveryAddress": "123 Main St, Dallas, TX 75001",
+  "driverId": 1,
+  "driverName": "Jamie Wells",
+  "driverPhone": "555-555-0101",
+  "driverVehicle": "Car (ABC-1234)",
+  "status": "READY",
+  "pickupTimestamp": null,
+  "deliveryTimestamp": null,
+  "estimatedDeliveryTime": "2026-02-17T11:15:00",
+  "createTimestamp": "2026-02-17T10:45:00",
+  "updateTimestamp": "2026-02-17T10:45:00"
+}
+```
+
+#### Mark Delivery As Picked Up
+```bash
+PUT http://localhost:8080/api/deliveries/1/pickup
+```
+
+#### Mark Delivery As Delivered
+```bash
+PUT http://localhost:8080/api/deliveries/1/complete
+```
+
 ## ⚠️ Error Response Examples
 
 ### Validation Error (400)
@@ -454,6 +569,8 @@ src/main/java/com/jdgorman/fooddeliveryapi/
 │   ├── MenuItemController.java
 │   ├── CustomerController.java
 │   ├── OrderController.java
+│   ├── DeliveryController.java
+│   ├── DriverController.java
 │   └── DeliveryAddressController.java
 ├── entity/             # JPA entities
 │   ├── Restaurant.java
@@ -461,22 +578,29 @@ src/main/java/com/jdgorman/fooddeliveryapi/
 │   ├── Customer.java
 │   ├── CustomerOrder.java
 │   ├── OrderItem.java
+│   ├── Delivery.java
+│   ├── Driver.java
 │   └── DeliveryAddress.java
 ├── enumerator/         # Enums
 │   ├── CustomerOrderStatus.java
-│   ├── MenuCategory.java
+│   ├── DriverStatus.java
+│   └── MenuCategory.java
 ├── repository/         # Data access layer
 │   ├── RestaurantRepository.java
 │   ├── MenuItemRepository.java
 │   ├── CustomerRepository.java
 │   ├── CustomerOrderRepository.java
 │   ├── OrderItemRepository.java
+│   ├── DeliveryRepository.java
+│   ├── DriverRepository.java
 │   └── DeliveryAddressRepository.java
 ├── service/            # Business logic
 │   ├── RestaurantService.java
 │   ├── MenuItemService.java
 │   ├── CustomerService.java
 │   ├── CustomerOrderService.java
+│   ├── DeliveryService.java
+│   ├── DriverService.java
 │   └── DeliveryAddressService.java
 ├── dto/                # Data Transfer Objects
 │   ├── MenuItemRequest.java
@@ -490,7 +614,11 @@ src/main/java/com/jdgorman/fooddeliveryapi/
 │   ├── OrderItemRequest.java
 │   ├── OrderItemResponse.java
 │   ├── OrderStatusUpdateRequest.java
-│   └── ApiMessageResponse.java
+│   ├── DriverRequest.java
+│   ├── DriverResponse.java
+│   ├── DriverStatusUpdateRequest.java
+│   ├── DeliveryRequest.java
+│   └── DeliveryResponse.java
 ├── exception/          # Custom exceptions and handlers
 │   ├── ResourceNotFoundException.java
 │   ├── DuplicateResourceException.java
@@ -545,6 +673,20 @@ src/main/java/com/jdgorman/fooddeliveryapi/
 - **menuItemId**: Required, must reference existing menu item
 - **quantity**: Required, must be greater than 0
 
+### Driver Entity
+- **firstName**: Required, cannot be blank
+- **lastName**: Required, cannot be blank
+- **email**: Required, must be valid email format, unique across all drivers
+- **phone**: Required, cannot be blank
+- **vehicleType**: Required, cannot be blank
+- **status**: Required, must be a valid DriverStatus value
+
+### Delivery Entity
+- **orderId**: Required, must reference existing order
+- **driverId**: Required, must reference existing driver
+- **status**: Required, must be a valid order status
+- **estimatedDeliveryTime**: Optional
+
 ## 🔗 Data Relationships
 
 ```
@@ -553,6 +695,8 @@ Customer (1) -----> (Many) DeliveryAddress
 Customer (1) -----> (Many) CustomerOrder
 Restaurant (1) -----> (Many) CustomerOrder
 CustomerOrder (1) -----> (Many) OrderItem
+CustomerOrder (1) -----> (One) Delivery
+Driver (1) -----> (Many) Delivery
 ```
 
 ## 🧪 Testing
@@ -648,7 +792,7 @@ Workflow files: `.github/workflows/ci.yml` and `.github/workflows/cd.yml`
 - [x] Delivery address management
 - [x] Order creation and status tracking
 - [x] CI/CD pipeline
-- [ ] Driver assignment and delivery tracking
+- [x] Driver assignment and delivery tracking
 - [ ] Search and filtering capabilities
 - [ ] Reporting and analytics
 - [ ] Integration tests
@@ -671,4 +815,4 @@ This project is open source and available for educational purposes.
 
 ---
 
-**Current Version**: 0.0.5 - Customer & Order Management Module
+**Current Version**: 0.0.6 - Delivery and Driver Management Module

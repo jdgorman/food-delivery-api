@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.jdgorman</groupId>
 	<artifactId>fooddeliveryapi</artifactId>
-	<version>0.0.5</version>
+	<version>0.0.6</version>
 	<name>fooddeliveryapi</name>
 	<description>API for managing food deliveries</description>
 	<url/>

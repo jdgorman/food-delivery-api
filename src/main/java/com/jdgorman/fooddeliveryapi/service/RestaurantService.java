@@ -90,7 +90,6 @@ public class RestaurantService {
         if (restaurant.getActive() != null) {
             existing.setActive(restaurant.getActive());
         }
-        existing.setUpdateTimestamp(LocalDateTime.now());
         return restaurantRepository.save(existing);
     }
 

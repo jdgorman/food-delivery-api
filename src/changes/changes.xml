@@ -29,5 +29,10 @@
                 CustomerOrder and OrderItem entities, repositories, services, and controllers.
             </action>
         </release>
+        <release version="0.0.6" date="2026-02-17" description="Delivery and Driver entities, repositories, services, and controllers.">
+            <action dev="jdgorman" type="add">
+                Delivery and Driver entities, repositories, services, and controllers.
+            </action>
+        </release>
     </body>
 </document>

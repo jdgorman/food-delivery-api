@@ -1,28 +1,30 @@
 package com.jdgorman.fooddeliveryapi.entity;
 
+import com.jdgorman.fooddeliveryapi.enumerator.DriverStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "customer",
+@Table(name = "driver",
         uniqueConstraints = @UniqueConstraint(
                 columnNames = "email",
-                name = "uk_customer_email"
+                name = "uk_driver_email"
         ))
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer {
+public class Driver {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,13 +45,23 @@ public class Customer {
 
     @NotBlank(message = "Phone number is required")
     @Column(nullable = false)
-    @Pattern(regexp = "^(?:\\+1\\s?)?(?:\\(\\d{3}\\)|\\d{3})[.\\-\\s]?\\d{3}[.\\-\\s]?\\d{4}$",
-            message = "Phone must be a valid US phone number")
     private String phone;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotBlank(message = "Vehicle type is required")
+    @Column(nullable = false)
+    private String vehicleType;
+
+    private String licensePlate;
+
+    @NotNull(message = "Driver status is required")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     @Builder.Default
-    private List<DeliveryAddress> addresses = new ArrayList<>();
+    private DriverStatus status = DriverStatus.AVAILABLE;
+
+    @OneToMany(mappedBy = "driver", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Delivery> deliveries = new ArrayList<>();
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createTimestamp;

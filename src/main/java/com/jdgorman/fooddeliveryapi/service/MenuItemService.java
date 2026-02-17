@@ -148,7 +148,6 @@ public class MenuItemService {
         menuItem.setIsAvailable(
                 request.getIsAvailable() != null ? request.getIsAvailable() : menuItem.getIsAvailable()
         );
-        menuItem.setUpdateTimestamp(LocalDateTime.now());
 
         MenuItem updated = menuItemRepository.save(menuItem);
         return convertToResponse(updated);
