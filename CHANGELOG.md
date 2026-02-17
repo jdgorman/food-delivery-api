@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [0.0.6] - 2026-02-17
+
+### Added
+
+- Delivery and Driver entities with persistence and validation.
+- Delivery status enum and delivery-related DTOs.
+- Delivery service and controller endpoints under `/api/deliveries`.
+- Repository tests for deliveries and drivers plus service/controller tests for delivery flows.
+- Updated README with delivery management endpoints, relationships, and project structure.
+
 ## [0.0.5] - 2026-02-11
 
 ### Added
