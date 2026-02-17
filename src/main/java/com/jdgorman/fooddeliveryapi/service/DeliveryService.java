@@ -93,7 +93,7 @@ public class DeliveryService {
      * @return the delivery response
      */
     public DeliveryResponse getDeliveryById(Long id) {
-        Delivery delivery = deliveryRepository.findById(id)
+        Delivery delivery = deliveryRepository.findByIdWithAllAssociations(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Delivery with id " + id + " does not exist"
                 ));
@@ -107,7 +107,7 @@ public class DeliveryService {
      * @return the delivery response
      */
     public DeliveryResponse getDeliveryByOrderId(Long orderId) {
-        Delivery delivery = deliveryRepository.findByCustomerOrderId(orderId)
+        Delivery delivery = deliveryRepository.findByCustomerOrderIdWithAllAssociations(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "No delivery found for order with id " + orderId
                 ));
@@ -127,7 +127,7 @@ public class DeliveryService {
                         "Driver with id " + driverId + " does not exist"
                 ));
 
-        List<Delivery> deliveries = deliveryRepository.findByDriverIdOrderByCreateTimestampDesc(driverId);
+        List<Delivery> deliveries = deliveryRepository.findByDriverIdWithAllAssociationsOrderByCreateTimestampDesc(driverId);
         return deliveries.stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
@@ -154,12 +154,10 @@ public class DeliveryService {
 
         delivery.setPickupTimestamp(LocalDateTime.now());
         delivery.setStatus(CustomerOrderStatus.OUT_FOR_DELIVERY);
-        delivery.setUpdateTimestamp(LocalDateTime.now());
 
         // Update order status
         CustomerOrder order = delivery.getCustomerOrder();
         order.setStatus(CustomerOrderStatus.OUT_FOR_DELIVERY);
-        order.setUpdateTimestamp(LocalDateTime.now());
         orderRepository.save(order);
 
         Delivery updated = deliveryRepository.save(delivery);
@@ -187,18 +185,15 @@ public class DeliveryService {
 
         delivery.setDeliveryTimestamp(LocalDateTime.now());
         delivery.setStatus(CustomerOrderStatus.DELIVERED);
-        delivery.setUpdateTimestamp(LocalDateTime.now());
 
         // Update order status
         CustomerOrder order = delivery.getCustomerOrder();
         order.setStatus(CustomerOrderStatus.DELIVERED);
-        order.setUpdateTimestamp(LocalDateTime.now());
         orderRepository.save(order);
 
         // Update driver status back to AVAILABLE
         Driver driver = delivery.getDriver();
         driver.setStatus(DriverStatus.AVAILABLE);
-        driver.setUpdateTimestamp(LocalDateTime.now());
         driverRepository.save(driver);
 
         Delivery updated = deliveryRepository.save(delivery);

@@ -4,7 +4,6 @@ import com.jdgorman.fooddeliveryapi.dto.DriverRequest;
 import com.jdgorman.fooddeliveryapi.dto.DriverResponse;
 import com.jdgorman.fooddeliveryapi.dto.DriverStatusUpdateRequest;
 import com.jdgorman.fooddeliveryapi.entity.Driver;
-import com.jdgorman.fooddeliveryapi.enumerator.CustomerOrderStatus;
 import com.jdgorman.fooddeliveryapi.enumerator.DriverStatus;
 import com.jdgorman.fooddeliveryapi.exception.DuplicateResourceException;
 import com.jdgorman.fooddeliveryapi.exception.ResourceNotFoundException;
@@ -13,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -121,7 +119,6 @@ public class DriverService {
         driver.setPhone(request.getPhone());
         driver.setVehicleType(request.getVehicleType());
         driver.setLicensePlate(request.getLicensePlate());
-        driver.setUpdateTimestamp(LocalDateTime.now());
 
         Driver updated = driverRepository.save(driver);
         return convertToResponse(updated);
@@ -142,7 +139,6 @@ public class DriverService {
                 ));
 
         driver.setStatus(request.getStatus());
-        driver.setUpdateTimestamp(LocalDateTime.now());
 
         Driver updated = driverRepository.save(driver);
         return convertToResponse(updated);
@@ -163,10 +159,8 @@ public class DriverService {
     }
 
     private DriverResponse convertToResponse(Driver driver) {
-        long activeDeliveries = driver.getDeliveries().stream()
-                .filter(d -> d.getStatus() != CustomerOrderStatus.DELIVERED &&
-                        d.getStatus() != CustomerOrderStatus.CANCELLED)
-                .count();
+        long activeDeliveries = driverRepository.countActiveDeliveriesByDriverId(driver.getId());
+        long totalDeliveries = driverRepository.countTotalDeliveriesByDriverId(driver.getId());
 
         return DriverResponse.builder()
                 .id(driver.getId())
@@ -178,7 +172,7 @@ public class DriverService {
                 .licensePlate(driver.getLicensePlate())
                 .status(driver.getStatus())
                 .activeDeliveries((int) activeDeliveries)
-                .totalDeliveries(driver.getDeliveries().size())
+                .totalDeliveries((int) totalDeliveries)
                 .createTimestamp(driver.getCreateTimestamp())
                 .updateTimestamp(driver.getUpdateTimestamp())
                 .build();

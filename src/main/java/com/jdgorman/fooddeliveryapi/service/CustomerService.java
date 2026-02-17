@@ -110,7 +110,6 @@ public class CustomerService {
         customer.setLastName(request.getLastName());
         customer.setEmail(request.getEmail());
         customer.setPhone(request.getPhone());
-        customer.setUpdateTimestamp(LocalDateTime.now());
 
         Customer updated = customerRepository.save(customer);
         return convertToResponse(updated);

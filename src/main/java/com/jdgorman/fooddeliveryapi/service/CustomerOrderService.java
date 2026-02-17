@@ -221,7 +221,6 @@ public class CustomerOrderService {
         validateStatusTransition(order.getStatus(), request.getStatus());
 
         order.setStatus(request.getStatus());
-        order.setUpdateTimestamp(LocalDateTime.now());
 
         CustomerOrder updated = customerOrderRepository.save(order);
         return convertToResponse(updated);
@@ -247,7 +246,6 @@ public class CustomerOrderService {
         }
 
         order.setStatus(CustomerOrderStatus.CANCELLED);
-        order.setUpdateTimestamp(LocalDateTime.now());
         customerOrderRepository.save(order);
     }
 

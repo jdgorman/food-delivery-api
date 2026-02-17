@@ -44,9 +44,21 @@ public class Delivery {
 
     private LocalDateTime estimatedDeliveryTime;
 
-    @Builder.Default
-    private LocalDateTime createTimestamp = LocalDateTime.now();
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createTimestamp;
 
-    @Builder.Default
-    private LocalDateTime updateTimestamp = LocalDateTime.now();
+    @Column(nullable = false)
+    private LocalDateTime updateTimestamp;
+
+    @PrePersist
+    void onCreate() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createTimestamp = now;
+        this.updateTimestamp = now;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateTimestamp = LocalDateTime.now();
+    }
 }

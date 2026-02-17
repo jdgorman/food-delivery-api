@@ -57,4 +57,9 @@ public class Restaurant {
             this.active = true;
         }
     }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateTimestamp = LocalDateTime.now();
+    }
 }

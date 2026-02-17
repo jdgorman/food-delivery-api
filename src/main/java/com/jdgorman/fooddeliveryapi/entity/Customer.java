@@ -63,4 +63,9 @@ public class Customer {
         this.createTimestamp = now;
         this.updateTimestamp = now;
     }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateTimestamp = LocalDateTime.now();
+    }
 }

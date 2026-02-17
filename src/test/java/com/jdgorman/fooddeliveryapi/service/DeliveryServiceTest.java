@@ -160,7 +160,7 @@ class DeliveryServiceTest {
 
     @Test
     void shouldGetDeliveryByIdSuccessfully() {
-        when(deliveryRepository.findById(1L)).thenReturn(Optional.of(delivery));
+        when(deliveryRepository.findByIdWithAllAssociations(1L)).thenReturn(Optional.of(delivery));
 
         DeliveryResponse result = deliveryService.getDeliveryById(1L);
 
@@ -171,7 +171,7 @@ class DeliveryServiceTest {
 
     @Test
     void shouldGetDeliveryByOrderIdSuccessfully() {
-        when(deliveryRepository.findByCustomerOrderId(1L)).thenReturn(Optional.of(delivery));
+        when(deliveryRepository.findByCustomerOrderIdWithAllAssociations(1L)).thenReturn(Optional.of(delivery));
 
         DeliveryResponse result = deliveryService.getDeliveryByOrderId(1L);
 
@@ -183,7 +183,7 @@ class DeliveryServiceTest {
     @Test
     void shouldGetDeliveriesByDriverSuccessfully() {
         when(driverRepository.findById(1L)).thenReturn(Optional.of(driver));
-        when(deliveryRepository.findByDriverIdOrderByCreateTimestampDesc(1L)).thenReturn(List.of(delivery));
+        when(deliveryRepository.findByDriverIdWithAllAssociationsOrderByCreateTimestampDesc(1L)).thenReturn(List.of(delivery));
 
         List<DeliveryResponse> result = deliveryService.getDeliveriesByDriver(1L);
 

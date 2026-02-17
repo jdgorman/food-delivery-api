@@ -59,6 +59,8 @@ class DriverServiceTest {
             saved.setId(1L);
             return saved;
         });
+        when(driverRepository.countActiveDeliveriesByDriverId(1L)).thenReturn(0L);
+        when(driverRepository.countTotalDeliveriesByDriverId(1L)).thenReturn(0L);
 
         DriverResponse result = driverService.createDriver(request);
 
@@ -71,12 +73,16 @@ class DriverServiceTest {
     @Test
     void shouldGetDriverByIdSuccessfully() {
         when(driverRepository.findById(1L)).thenReturn(Optional.of(driver));
+        when(driverRepository.countActiveDeliveriesByDriverId(1L)).thenReturn(2L);
+        when(driverRepository.countTotalDeliveriesByDriverId(1L)).thenReturn(10L);
 
         DriverResponse result = driverService.getDriverById(1L);
 
         assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("Jamie", result.getFirstName());
+        assertEquals(2, result.getActiveDeliveries());
+        assertEquals(10, result.getTotalDeliveries());
     }
 
     @Test
@@ -89,11 +95,15 @@ class DriverServiceTest {
     @Test
     void shouldGetAllDriversSuccessfully() {
         when(driverRepository.findAll()).thenReturn(List.of(driver));
+        when(driverRepository.countActiveDeliveriesByDriverId(1L)).thenReturn(1L);
+        when(driverRepository.countTotalDeliveriesByDriverId(1L)).thenReturn(5L);
 
         List<DriverResponse> result = driverService.getAllDrivers();
 
         assertEquals(1, result.size());
         assertEquals("Jamie", result.get(0).getFirstName());
+        assertEquals(1, result.get(0).getActiveDeliveries());
+        assertEquals(5, result.get(0).getTotalDeliveries());
     }
 
     @Test
@@ -104,6 +114,8 @@ class DriverServiceTest {
 
         when(driverRepository.findById(1L)).thenReturn(Optional.of(driver));
         when(driverRepository.save(any(Driver.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(driverRepository.countActiveDeliveriesByDriverId(1L)).thenReturn(0L);
+        when(driverRepository.countTotalDeliveriesByDriverId(1L)).thenReturn(0L);
 
         DriverResponse result = driverService.updateDriverStatus(1L, request);
 
