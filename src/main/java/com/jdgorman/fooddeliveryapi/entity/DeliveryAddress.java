@@ -62,4 +62,9 @@ public class DeliveryAddress {
         this.createTimestamp = now;
         this.updateTimestamp = now;
     }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updateTimestamp = LocalDateTime.now();
+    }
 }

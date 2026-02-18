@@ -144,7 +144,6 @@ public class DeliveryAddressService {
         if (request.getIsDefault() != null) {
             address.setIsDefault(Boolean.TRUE.equals(request.getIsDefault()));
         }
-        address.setUpdateTimestamp(LocalDateTime.now());
 
         DeliveryAddress updated = addressRepository.save(address);
         return convertToResponse(updated);
