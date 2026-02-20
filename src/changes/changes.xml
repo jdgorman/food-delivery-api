@@ -34,5 +34,10 @@
                 Delivery and Driver entities, repositories, services, and controllers.
             </action>
         </release>
+        <release version="0.0.7" date="2026-02-20" description="Dockerized Application">
+            <action dev="jdgorman" type="add">
+                Dockerized Application and downgraded to Java 21
+            </action>
+        </release>
     </body>
 </document>
