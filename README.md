@@ -3,7 +3,7 @@
 ![CI Status](https://github.com/jdgorman/food-delivery-api/actions/workflows/ci.yml/badge.svg)
 ![CD Status](https://github.com/jdgorman/food-delivery-api/actions/workflows/cd.yml/badge.svg)
 
-A robust RESTful API for managing food delivery operations, built with Spring Boot 4 and Java 25. This system handles restaurant management, menu items, customer profiles, delivery addresses, customer orders, and delivery tracking.
+A robust RESTful API for managing food delivery operations, built with Spring Boot 4 and Java 21. This system handles restaurant management, menu items, customer profiles, delivery addresses, customer orders, and delivery tracking.
 
 ## 🚀 Features
 
@@ -31,7 +31,7 @@ A robust RESTful API for managing food delivery operations, built with Spring Bo
 
 ## 🛠️ Tech Stack
 
-- **Java**: 25
+- **Java**: 21
 - **Spring Boot**: 4.0.2
 - **Database**: H2 (embedded SQL database)
 - **Build Tool**: Maven
@@ -46,7 +46,7 @@ A robust RESTful API for managing food delivery operations, built with Spring Bo
 
 ## 📋 Prerequisites
 
-- JDK 25 or higher
+- JDK 21
 - Maven 3.6+
 - Your favorite IDE (IntelliJ IDEA, Eclipse, VS Code)
 
@@ -815,4 +815,4 @@ This project is open source and available for educational purposes.
 
 ---
 
-**Current Version**: 0.0.7 - Delivery and Driver Management Module
+**Current Version**: 0.0.7 - Dockerized Application
