@@ -780,7 +780,7 @@ Runs on every push and pull request:
 ### CD (Continuous Deployment)
 Runs on merge to main:
 - ✅ Builds production-ready artifact
-- 🚧 Prepared for Azure deployment (coming soon)
+- 🚧 Prepared for AWS deployment (coming soon)
 
 Workflow files: `.github/workflows/ci.yml` and `.github/workflows/cd.yml`
 
@@ -797,7 +797,7 @@ Workflow files: `.github/workflows/ci.yml` and `.github/workflows/cd.yml`
 - [ ] Reporting and analytics
 - [ ] Integration tests
 - [ ] API documentation with Swagger/OpenAPI
-- [ ] Deployment to Azure
+- [ ] Deployment to AWS
 
 ## 🤝 Contributing
 
@@ -815,4 +815,4 @@ This project is open source and available for educational purposes.
 
 ---
 
-**Current Version**: 0.0.6 - Delivery and Driver Management Module
+**Current Version**: 0.0.7 - Delivery and Driver Management Module

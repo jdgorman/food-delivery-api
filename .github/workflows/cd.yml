@@ -1,4 +1,4 @@
-name: CD - Deploy to Azure
+name: CD - Deploy to AWS
 
 on:
   push:
@@ -39,8 +39,8 @@ jobs:
           name: app-jar
           path: target/*.jar
 
-      # Placeholder for actual Azure deployment
-      - name: Ready for Azure deployment
+      # Placeholder for actual AWS deployment
+      - name: Ready for AWS deployment
         run: |
           echo "Application built and ready for deployment"
-          echo "Next steps: Configure Azure credentials and deployment"
+          echo "Next steps: Configure AWS credentials and deployment"

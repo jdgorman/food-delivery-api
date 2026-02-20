@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.jdgorman</groupId>
 	<artifactId>fooddeliveryapi</artifactId>
-	<version>0.0.6</version>
+	<version>0.0.7</version>
 	<name>fooddeliveryapi</name>
 	<description>API for managing food deliveries</description>
 	<url/>
@@ -27,7 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<java.version>25</java.version>
+		<java.version>21</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
